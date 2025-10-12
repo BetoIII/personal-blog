@@ -1,8 +1,8 @@
 export const siteConfig = {
-  name: "Magic UI Blog",
-  url: "https://blog-magicui.vercel.app",
+  name: "Beto's Blog",
+  url: "https://betoiii.com",
   description:
-    "Modern React and web development tutorials, insights, and best practices.",
+    "Thoughts, ideas, and insights on technology, development, and more.",
 };
 
 export type SiteConfig = typeof siteConfig;

@@ -1,7 +1,3 @@
-import { docs, meta } from "@/.source";
-import { DocsBody } from "fumadocs-ui/page";
-import { loader } from "fumadocs-core/source";
-import { createMDXSource } from "fumadocs-mdx";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,15 +12,20 @@ import { PromoContent } from "@/components/promo-content";
 import { getAuthor, isValidAuthor } from "@/lib/authors";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
 import { HashScrollHandler } from "@/components/hash-scroll-handler";
+import { notionBlogSource } from "@/lib/blog-source";
+import { MarkdownRenderer } from "@/components/markdown-renderer";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-const blogSource = loader({
-  baseUrl: "/blog",
-  source: createMDXSource(docs, meta),
-});
+// Generate static params for all blog posts
+export async function generateStaticParams() {
+  const posts = await notionBlogSource.getPages();
+  return posts.map((post) => ({
+    slug: post.url.replace("/blog/", ""),
+  }));
+}
 
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString("en-US", {
@@ -41,13 +42,12 @@ export default async function BlogPost({ params }: PageProps) {
     notFound();
   }
 
-  const page = blogSource.getPage([slug]);
+  const page = await notionBlogSource.getPage([slug]);
 
   if (!page) {
     notFound();
   }
 
-  const MDX = page.data.body;
   const date = new Date(page.data.date);
   const formattedDate = formatDate(date);
 
@@ -117,11 +117,7 @@ export default async function BlogPost({ params }: PageProps) {
             </div>
           )}
           <div className="p-6 lg:p-10">
-            <div className="prose dark:prose-invert max-w-none prose-headings:scroll-mt-8 prose-headings:font-semibold prose-a:no-underline prose-headings:tracking-tight prose-headings:text-balance prose-p:tracking-tight prose-p:text-balance prose-lg">
-              <DocsBody>
-                <MDX />
-              </DocsBody>
-            </div>
+            <MarkdownRenderer content={page.content} />
           </div>
           <div className="mt-10">
             <ReadMoreSection

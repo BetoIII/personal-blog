@@ -1,13 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import { docs, meta } from "@/.source";
-import { loader } from "fumadocs-core/source";
-import { createMDXSource } from "fumadocs-mdx";
 import Link from "next/link";
-
-const blogSource = loader({
-  baseUrl: "/blog",
-  source: createMDXSource(docs, meta),
-});
+import { getCachedPosts } from "@/lib/blog-source";
 
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString("en-US", {
@@ -39,11 +32,11 @@ interface ReadMoreSectionProps {
   currentTags?: string[];
 }
 
-export function ReadMoreSection({
+export async function ReadMoreSection({
   currentSlug,
   currentTags = [],
 }: ReadMoreSectionProps) {
-  const allPages = blogSource.getPages() as BlogPage[];
+  const allPages = await getCachedPosts();
 
   const currentUrl = `/blog/${currentSlug.join("/")}`;
 

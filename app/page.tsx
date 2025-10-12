@@ -1,10 +1,8 @@
-import { docs, meta } from "@/.source";
-import { loader } from "fumadocs-core/source";
-import { createMDXSource } from "fumadocs-mdx";
 import { Suspense } from "react";
 import { BlogCard } from "@/components/blog-card";
 import { TagFilter } from "@/components/tag-filter";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
+import { getCachedPosts } from "@/lib/blog-source";
 
 interface BlogData {
   title: string;
@@ -23,11 +21,6 @@ interface BlogPage {
   data: BlogData;
 }
 
-const blogSource = loader({
-  baseUrl: "/blog",
-  source: createMDXSource(docs, meta),
-});
-
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString("en-US", {
     year: "numeric",
@@ -42,7 +35,7 @@ export default async function HomePage({
   searchParams: Promise<{ tag?: string }>;
 }) {
   const resolvedSearchParams = await searchParams;
-  const allPages = blogSource.getPages() as BlogPage[];
+  const allPages = await getCachedPosts();
   const sortedBlogs = allPages.sort((a, b) => {
     const dateA = new Date(a.data.date).getTime();
     const dateB = new Date(b.data.date).getTime();
@@ -89,10 +82,10 @@ export default async function HomePage({
         <div className="max-w-7xl mx-auto w-full">
           <div className="flex flex-col gap-2">
             <h1 className="font-medium text-4xl md:text-5xl tracking-tighter">
-              Magic UI Blog
+              Beto's Blog
             </h1>
             <p className="text-muted-foreground text-sm md:text-base lg:text-lg">
-              Latest news and updates from Magic UI.
+              Thoughts, ideas, and insights.
             </p>
           </div>
         </div>

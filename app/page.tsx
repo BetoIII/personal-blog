@@ -4,23 +4,6 @@ import { TagFilter } from "@/components/tag-filter";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
 import { getCachedPosts } from "@/lib/blog-source";
 
-interface BlogData {
-  title: string;
-  description: string;
-  date: string;
-  tags?: string[];
-  featured?: boolean;
-  readTime?: string;
-  author?: string;
-  authorImage?: string;
-  thumbnail?: string;
-}
-
-interface BlogPage {
-  url: string;
-  data: BlogData;
-}
-
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString("en-US", {
     year: "numeric",
@@ -82,7 +65,7 @@ export default async function HomePage({
         <div className="max-w-7xl mx-auto w-full">
           <div className="flex flex-col gap-2">
             <h1 className="font-medium text-4xl md:text-5xl tracking-tighter">
-              Beto's Blog
+              Beto&apos;s Blog
             </h1>
             <p className="text-muted-foreground text-sm md:text-base lg:text-lg">
               Thoughts, ideas, and insights.

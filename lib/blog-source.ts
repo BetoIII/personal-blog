@@ -10,6 +10,7 @@ export interface BlogData {
   author?: string;
   authorImage?: string;
   thumbnail?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body?: any; // For MDX content
 }
 

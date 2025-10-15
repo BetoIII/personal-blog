@@ -16,18 +16,16 @@ This is a personal blog combining the MagicUI blog template with Notion as a hea
 
 1. **Notion Account**: You need a Notion account and workspace
 2. **Notion Integration**: Create a Notion integration at https://www.notion.so/my-integrations
-3. **Notion Database**: Your blog database should have the following properties:
-   - `Name` or `Title` or `Page` (Title type) - Blog post title
-   - `Slug` (Rich Text) - URL slug for the post
-   - `Description` (Rich Text) - Post description/excerpt
-   - `Date` (Date) - Publication date
-   - `Published` (Checkbox) - Whether the post is published
-   - `Tags` (Multi-select) - Post tags/categories
-   - `Featured` (Checkbox, optional) - Mark post as featured
-   - `Thumbnail` (Files, optional) - Post thumbnail image
-   - `Author` (Rich Text, optional) - Author name
-   - `AuthorImage` (Files, optional) - Author profile image
-   - `ReadTime` (Rich Text, optional) - Estimated read time
+3. **Notion Database**: Your blog database has the following properties:
+   - `Title` (Title type) - Blog post title
+   - `Published Date` (Date) - Publication date
+   - `Status` (Status) - Set to "Published", "Live", or "Done" to make post visible
+   - `Tags` (Multi-select) - Post tags
+   - `Category` (Select) - Post category (will also appear as a tag)
+   - `Featured Image` (URL) - URL to post thumbnail image
+   - `Author` (People) - Post author
+
+   Note: Slugs are auto-generated from titles. No separate slug field needed.
 
 ## Setup Steps
 
@@ -83,14 +81,16 @@ Visit http://localhost:3000 to see your blog!
 1. Open your Notion database
 2. Create a new page
 3. Fill in all the required properties:
-   - Title
-   - Slug (e.g., "my-first-post")
-   - Description
-   - Date
-   - Set `Published` checkbox to true
-   - Add some tags
+   - **Title**: My First Post
+   - **Published Date**: Today's date
+   - **Status**: Set to "Published" (or "Live" or "Done")
+   - **Tags**: Add a few tags
+   - **Category**: Select a category
+   - **Author**: Select yourself
 4. Write your content in the page (supports markdown)
 5. Refresh your blog to see the new post!
+
+Note: The slug will be automatically generated from the title (e.g., "My First Post" → "my-first-post")
 
 ## Deployment
 
@@ -176,10 +176,11 @@ const CACHE_DURATION = 60 * 1000; // 60 seconds
 
 ### Posts not appearing?
 
-1. Check that `Published` checkbox is enabled in Notion
+1. Check that `Status` is set to "Published", "Live", or "Done" in Notion
 2. Verify your `NOTION_TOKEN` is correct
 3. Ensure the integration is connected to your database
 4. Check the browser console and server logs for errors
+5. Make sure the `Published Date` is set
 
 ### Build errors?
 

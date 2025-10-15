@@ -43,13 +43,15 @@ Visit http://localhost:3000 🎉
 2. Click "+ New" to create a page
 3. Fill in:
    - **Title**: My First Post
-   - **Slug**: my-first-post
-   - **Description**: This is my first blog post!
-   - **Date**: Today's date
-   - **Published**: ✓ (checked)
+   - **Published Date**: Today's date
+   - **Status**: Set to "Published" (or "Live" or "Done")
    - **Tags**: Add a few tags
+   - **Category**: Select a category
+   - **Author**: Select yourself
 4. Write your content in the page body
 5. Refresh your blog!
+
+Note: The slug is auto-generated from the title (e.g., "My First Post" → "my-first-post")
 
 ## 🌐 Deploy to Production
 
@@ -94,20 +96,16 @@ Then:
 
 ## 📊 Notion Database Properties
 
-Required properties in your Notion database:
-- ✅ **Name/Title** (Title)
-- ✅ **Slug** (Rich Text)
-- ✅ **Description** (Rich Text)
-- ✅ **Date** (Date)
-- ✅ **Published** (Checkbox)
-- ✅ **Tags** (Multi-select)
+Your Notion database has these properties:
+- ✅ **Title** (Title) - Blog post title
+- ✅ **Published Date** (Date) - Publication date
+- ✅ **Status** (Status) - Set to "Published", "Live", or "Done"
+- ✅ **Tags** (Multi-select) - Post tags
+- ✅ **Category** (Select) - Post category
+- 🖼️ **Featured Image** (URL) - Thumbnail image URL
+- 👤 **Author** (People) - Post author
 
-Optional properties:
-- ⭐ **Featured** (Checkbox)
-- 🖼️ **Thumbnail** (Files)
-- 👤 **Author** (Rich Text)
-- 📸 **AuthorImage** (Files)
-- ⏱️ **ReadTime** (Rich Text)
+Slugs are auto-generated from titles!
 
 ## 🛠️ Common Commands
 

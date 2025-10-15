@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Client } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
 import {
@@ -54,6 +56,25 @@ function getCheckbox(property: any): boolean {
   return property.checkbox;
 }
 
+// Helper function to get URL value
+function getUrl(property: any): string {
+  if (!property || property.type !== "url") return "";
+  return property.url || "";
+}
+
+// Helper function to get people
+function getPeople(property: any): string {
+  if (!property || property.type !== "people") return "";
+  if (property.people.length === 0) return "";
+  return property.people[0].name || "";
+}
+
+// Helper function to get status
+function getStatus(property: any): string {
+  if (!property || property.type !== "status") return "";
+  return property.status?.name || "";
+}
+
 // Helper function to get date value
 function getDate(property: any): string {
   if (!property || property.type !== "date") return "";
@@ -79,24 +100,51 @@ function getTitle(property: any): string {
   return getPlainText(property.title);
 }
 
+// Helper function to create slug from title
+function createSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 // Transform Notion page to BlogPost
 function transformNotionPageToPost(page: PageObjectResponse): NotionBlogPost {
   const properties = page.properties;
 
+  // Get title
+  const title = getTitle(properties.Title);
+
+  // Get status - use "Published" or "Live" status as the published flag
+  const status = getStatus(properties.Status);
+  const published = status === "Published" || status === "Live" || status === "Done";
+
+  // Create slug from title if no slug property exists
+  const slug = createSlug(title);
+
+  // Get tags from both Tags (multi-select) and Category (select)
+  const tags: string[] = [];
+  if (properties.Tags) {
+    tags.push(...getMultiSelect(properties.Tags));
+  }
+  const category = getSelect(properties.Category);
+  if (category) {
+    tags.push(category);
+  }
+
   return {
     id: page.id,
-    slug: getPlainText((properties.Slug as any)?.rich_text || []) || page.id,
-    title: getTitle(properties.Name || properties.Title || properties.Page),
-    description:
-      getPlainText((properties.Description as any)?.rich_text || []) || "",
-    date: getDate(properties.Date) || page.created_time,
-    tags: getMultiSelect(properties.Tags),
-    published: getCheckbox(properties.Published),
-    featured: getCheckbox(properties.Featured),
-    thumbnail: getFiles(properties.Thumbnail),
-    author: getPlainText((properties.Author as any)?.rich_text || []),
-    authorImage: getFiles(properties.AuthorImage),
-    readTime: getPlainText((properties.ReadTime as any)?.rich_text || []),
+    slug: slug,
+    title: title,
+    description: "", // No description field, will use excerpt from content
+    date: getDate(properties["Published Date"]) || page.created_time,
+    tags: tags,
+    published: published,
+    featured: false, // No featured field in your database
+    thumbnail: getUrl(properties["Featured Image"]),
+    author: getPeople(properties.Author),
+    authorImage: "", // No author image field
+    readTime: "", // No read time field, could calculate from content
   };
 }
 
@@ -105,23 +153,19 @@ export async function getAllPosts(): Promise<NotionBlogPost[]> {
   try {
     const response: QueryDatabaseResponse = await notion.databases.query({
       database_id: DATABASE_ID,
-      filter: {
-        property: "Published",
-        checkbox: {
-          equals: true,
-        },
-      },
       sorts: [
         {
-          property: "Date",
+          property: "Published Date",
           direction: "descending",
         },
       ],
     });
 
+    // Filter by status and map to blog posts
     return response.results
       .filter((page): page is PageObjectResponse => "properties" in page)
-      .map(transformNotionPageToPost);
+      .map(transformNotionPageToPost)
+      .filter((post) => post.published); // Filter for published posts only
   } catch (error) {
     console.error("Error fetching posts from Notion:", error);
     return [];
@@ -133,30 +177,10 @@ export async function getPostBySlug(
   slug: string
 ): Promise<NotionBlogPost | null> {
   try {
-    const response = await notion.databases.query({
-      database_id: DATABASE_ID,
-      filter: {
-        and: [
-          {
-            property: "Published",
-            checkbox: {
-              equals: true,
-            },
-          },
-          {
-            property: "Slug",
-            rich_text: {
-              equals: slug,
-            },
-          },
-        ],
-      },
-    });
-
-    if (response.results.length === 0) return null;
-
-    const page = response.results[0] as PageObjectResponse;
-    return transformNotionPageToPost(page);
+    // Since we don't have a Slug field, we need to fetch all posts and find by generated slug
+    const allPosts = await getAllPosts();
+    const post = allPosts.find((p) => p.slug === slug);
+    return post || null;
   } catch (error) {
     console.error("Error fetching post from Notion:", error);
     return null;

@@ -1,8 +1,17 @@
 import { Suspense } from "react";
-import { BlogCard } from "@/components/blog-card";
-import { TagFilter } from "@/components/tag-filter";
-import { FlickeringGrid } from "@/components/magicui/flickering-grid";
+import Link from "next/link";
+import Image from "next/image";
+import { BlurFade } from "@/components/magicui/blur-fade";
+import { BlurFadeText } from "@/components/magicui/blur-fade-text";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { ResumeCard } from "@/components/resume-card";
+import { ProjectCard } from "@/components/project-card";
+import { DATA } from "@/lib/portfolio-data";
 import { getCachedPosts } from "@/lib/blog-source";
+import Markdown from "react-markdown";
+
+const BLUR_FADE_DELAY = 0.04;
 
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString("en-US", {
@@ -12,12 +21,7 @@ const formatDate = (date: Date): string => {
   });
 };
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ tag?: string }>;
-}) {
-  const resolvedSearchParams = await searchParams;
+export default async function Page() {
   const allPages = await getCachedPosts();
   const sortedBlogs = allPages.sort((a, b) => {
     const dateA = new Date(a.data.date).getTime();
@@ -25,90 +29,313 @@ export default async function HomePage({
     return dateB - dateA;
   });
 
-  const allTags = [
-    "All",
-    ...Array.from(
-      new Set(sortedBlogs.flatMap((blog) => blog.data.tags || []))
-    ).sort(),
-  ];
-
-  const selectedTag = resolvedSearchParams.tag || "All";
-  const filteredBlogs =
-    selectedTag === "All"
-      ? sortedBlogs
-      : sortedBlogs.filter((blog) => blog.data.tags?.includes(selectedTag));
-
-  const tagCounts = allTags.reduce((acc, tag) => {
-    if (tag === "All") {
-      acc[tag] = sortedBlogs.length;
-    } else {
-      acc[tag] = sortedBlogs.filter((blog) =>
-        blog.data.tags?.includes(tag)
-      ).length;
-    }
-    return acc;
-  }, {} as Record<string, number>);
+  // Get the 3 latest blog posts
+  const latestBlogs = sortedBlogs.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-background relative">
-      <div className="absolute top-0 left-0 z-0 w-full h-[200px] [mask-image:linear-gradient(to_top,transparent_25%,black_95%)]">
-        <FlickeringGrid
-          className="absolute top-0 left-0 size-full"
-          squareSize={4}
-          gridGap={6}
-          color="#6B7280"
-          maxOpacity={0.2}
-          flickerChance={0.05}
-        />
-      </div>
-      <div className="p-6 border-b border-border flex flex-col gap-6 min-h-[250px] justify-center relative z-10">
-        <div className="max-w-7xl mx-auto w-full">
-          <div className="flex flex-col gap-2">
-            <h1 className="font-medium text-4xl md:text-5xl tracking-tighter">
-              Beto&apos;s Blog
-            </h1>
-            <p className="text-muted-foreground text-sm md:text-base lg:text-lg">
-              Thoughts, ideas, and insights.
-            </p>
+    <main className="flex flex-col min-h-screen">
+      <section id="hero" className="relative overflow-hidden section-padding px-6 md:px-12">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-8 relative z-10">
+              <BlurFade delay={BLUR_FADE_DELAY}>
+                <div className="inline-block mb-4 px-4 py-2 thick-border bg-primary text-primary-foreground">
+                  <span className="text-sm font-medium uppercase tracking-wider">Software Engineer</span>
+                </div>
+              </BlurFade>
+              <BlurFadeText
+                delay={BLUR_FADE_DELAY * 2}
+                className="mb-6"
+                yOffset={12}
+                text={`Hi, I'm ${DATA.name.split(" ")[0]}`}
+              />
+              <BlurFade delay={BLUR_FADE_DELAY * 3}>
+                <p className="text-xl md:text-2xl font-light text-muted-foreground max-w-2xl leading-relaxed">
+                  {DATA.description}
+                </p>
+              </BlurFade>
+              <BlurFade delay={BLUR_FADE_DELAY * 4}>
+                <div className="mt-12 flex flex-wrap gap-4">
+                  <a
+                    href="#contact"
+                    className="thick-border bg-primary text-primary-foreground px-8 py-4 hover:bg-foreground hover:text-background transition-all duration-300 font-medium uppercase text-sm tracking-wider"
+                  >
+                    Get in Touch
+                  </a>
+                  <a
+                    href="#work"
+                    className="thick-border bg-background text-foreground px-8 py-4 hover:bg-foreground hover:text-background transition-all duration-300 font-medium uppercase text-sm tracking-wider"
+                  >
+                    View Work
+                  </a>
+                </div>
+              </BlurFade>
+            </div>
+            <div className="lg:col-span-4 relative">
+              <BlurFade delay={BLUR_FADE_DELAY * 2}>
+                <div className="relative">
+                  <div className="absolute -top-6 -left-6 w-full h-full thick-border bg-accent -z-10"></div>
+                  <Avatar className="w-full h-auto aspect-square thick-border">
+                    <AvatarImage alt={DATA.name} src={DATA.avatarUrl} className="object-cover" />
+                    <AvatarFallback className="text-6xl">{DATA.initials}</AvatarFallback>
+                  </Avatar>
+                  <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground thick-border px-6 py-3">
+                    <span className="font-serif text-2xl font-semibold">{DATA.initials}</span>
+                  </div>
+                </div>
+              </BlurFade>
+            </div>
           </div>
         </div>
-        {allTags.length > 0 && (
-          <div className="max-w-7xl mx-auto w-full">
-            <TagFilter
-              tags={allTags}
-              selectedTag={selectedTag}
-              tagCounts={tagCounts}
-            />
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-secondary opacity-30 -z-10 transform translate-x-1/2"></div>
+      </section>
+
+      <section id="about" className="section-padding px-6 md:px-12 bg-muted relative">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <div className="lg:col-span-4">
+              <BlurFade delay={BLUR_FADE_DELAY * 5}>
+                <div className="sticky top-8">
+                  <h2 className="mb-4">About</h2>
+                  <div className="w-24 h-1 bg-primary"></div>
+                </div>
+              </BlurFade>
+            </div>
+            <div className="lg:col-span-8">
+              <BlurFade delay={BLUR_FADE_DELAY * 6}>
+                <div className="thick-border bg-background p-8 md:p-12">
+                  <Markdown className="prose prose-lg max-w-full text-pretty font-sans text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
+                    {DATA.summary}
+                  </Markdown>
+                </div>
+              </BlurFade>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto w-full px-6 lg:px-0">
-        <Suspense fallback={<div>Loading articles...</div>}>
-          <div
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 relative overflow-hidden border-x border-border ${
-              filteredBlogs.length < 4 ? "border-b" : "border-b-0"
-            }`}
-          >
-            {filteredBlogs.map((blog) => {
-              const date = new Date(blog.data.date);
-              const formattedDate = formatDate(date);
-
-              return (
-                <BlogCard
-                  key={blog.url}
-                  url={blog.url}
-                  title={blog.data.title}
-                  description={blog.data.description}
-                  date={formattedDate}
-                  thumbnail={blog.data.thumbnail}
-                  showRightBorder={filteredBlogs.length < 3}
+      <section id="work" className="section-padding px-6 md:px-12 relative overflow-hidden">
+        <div className="mx-auto w-full max-w-7xl">
+          <BlurFade delay={BLUR_FADE_DELAY * 7}>
+            <div className="mb-16">
+              <h2 className="mb-4">Work Experience</h2>
+              <div className="w-32 h-1 bg-primary"></div>
+            </div>
+          </BlurFade>
+          <div className="space-y-8">
+            {DATA.work.map((work, id) => (
+              <BlurFade
+                key={work.company}
+                delay={BLUR_FADE_DELAY * 8 + id * 0.1}
+              >
+                <ResumeCard
+                  logoUrl={work.logoUrl}
+                  altText={work.company}
+                  title={work.company}
+                  subtitle={work.title}
+                  href={work.href}
+                  badges={work.badges}
+                  period={`${work.start} - ${work.end ?? "Present"}`}
+                  description={work.description}
                 />
-              );
-            })}
+              </BlurFade>
+            ))}
           </div>
-        </Suspense>
-      </div>
-    </div>
+        </div>
+        <div className="absolute bottom-0 left-0 w-1/4 h-1/2 bg-accent opacity-10 -z-10"></div>
+      </section>
+
+      <section id="education" className="section-padding px-6 md:px-12 bg-muted">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+              <BlurFade delay={BLUR_FADE_DELAY * 10}>
+                <div className="mb-8">
+                  <h2 className="mb-4">Education</h2>
+                  <div className="w-24 h-1 bg-primary"></div>
+                </div>
+              </BlurFade>
+              <div className="space-y-6">
+                {DATA.education.map((education, id) => (
+                  <BlurFade
+                    key={education.school}
+                    delay={BLUR_FADE_DELAY * 11 + id * 0.1}
+                  >
+                    <ResumeCard
+                      href={education.href}
+                      logoUrl={education.logoUrl}
+                      altText={education.school}
+                      title={education.school}
+                      subtitle={education.degree}
+                      period={`${education.start} - ${education.end}`}
+                    />
+                  </BlurFade>
+                ))}
+              </div>
+            </div>
+            <div>
+              <BlurFade delay={BLUR_FADE_DELAY * 10}>
+                <div className="mb-8">
+                  <h2 className="mb-4">Skills</h2>
+                  <div className="w-24 h-1 bg-primary"></div>
+                </div>
+              </BlurFade>
+              <div className="flex flex-wrap gap-3">
+                {DATA.skills.map((skill, id) => (
+                  <BlurFade key={skill} delay={BLUR_FADE_DELAY * 12 + id * 0.05}>
+                    <Badge className="text-base px-4 py-2">{skill}</Badge>
+                  </BlurFade>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" className="section-padding px-6 md:px-12 relative">
+        <div className="mx-auto w-full max-w-7xl">
+          <BlurFade delay={BLUR_FADE_DELAY * 13}>
+            <div className="text-center mb-16">
+              <h2 className="mb-6">Check out my latest work</h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                I&apos;ve worked on a variety of projects, from simple
+                websites to complex web applications. Here are a few of my
+                favorites.
+              </p>
+            </div>
+          </BlurFade>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {DATA.projects.map((project, id) => (
+              <BlurFade
+                key={project.title}
+                delay={BLUR_FADE_DELAY * 14 + id * 0.15}
+              >
+                <ProjectCard
+                  href={project.href}
+                  title={project.title}
+                  description={project.description}
+                  dates={project.dates}
+                  tags={project.technologies}
+                  image={project.image}
+                  video={project.video}
+                  links={project.links}
+                />
+              </BlurFade>
+            ))}
+          </div>
+        </div>
+        <div className="absolute top-1/2 right-0 w-1/3 h-1/3 bg-secondary opacity-20 -z-10 transform translate-x-1/3"></div>
+      </section>
+
+      <section id="blog" className="section-padding px-6 md:px-12 bg-muted">
+        <div className="mx-auto w-full max-w-7xl">
+          <BlurFade delay={BLUR_FADE_DELAY * 15}>
+            <div className="text-center mb-16">
+              <h2 className="mb-6">I like to write things</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Thoughts, ideas, and insights from my journey in tech.
+              </p>
+            </div>
+          </BlurFade>
+
+          <Suspense fallback={<div className="text-center text-muted-foreground">Loading articles...</div>}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {latestBlogs.map((blog, id) => {
+                const date = new Date(blog.data.date);
+                const formattedDate = formatDate(date);
+
+                return (
+                  <BlurFade
+                    key={blog.url}
+                    delay={BLUR_FADE_DELAY * 16 + id * 0.1}
+                  >
+                    <Link
+                      href={blog.url}
+                      className="group block thick-border bg-background hover-lift h-full flex flex-col"
+                    >
+                      {blog.data.thumbnail && (
+                        <div className="relative w-full h-48 overflow-hidden">
+                          <Image
+                            src={blog.data.thumbnail}
+                            alt={blog.data.title}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-110"
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                          />
+                        </div>
+                      )}
+                      <div className="p-6 flex flex-col flex-1">
+                        <time className="block text-xs text-muted-foreground mb-2 uppercase tracking-wider">
+                          {formattedDate}
+                        </time>
+                        <h3 className="text-xl font-serif font-medium mb-2 group-hover:text-primary transition-colors">
+                          {blog.data.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm flex-1">
+                          {blog.data.description}
+                        </p>
+                        <div className="mt-4 text-sm font-medium uppercase tracking-wider group-hover:translate-x-2 transition-transform">
+                          Read More →
+                        </div>
+                      </div>
+                    </Link>
+                  </BlurFade>
+                );
+              })}
+            </div>
+          </Suspense>
+
+          <BlurFade delay={BLUR_FADE_DELAY * 17}>
+            <div className="flex justify-center mt-12">
+              <Link
+                href="/blog"
+                className="thick-border bg-primary text-primary-foreground px-8 py-4 hover:bg-foreground hover:text-background transition-all duration-300 font-medium uppercase text-sm tracking-wider inline-block"
+              >
+                View all posts →
+              </Link>
+            </div>
+          </BlurFade>
+        </div>
+      </section>
+
+      <section id="contact" className="section-padding px-6 md:px-12 relative overflow-hidden">
+        <div className="mx-auto w-full max-w-7xl">
+          <BlurFade delay={BLUR_FADE_DELAY * 18}>
+            <div className="thick-border bg-primary text-primary-foreground p-12 md:p-20 text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-accent opacity-20 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-foreground opacity-10 rounded-full transform -translate-x-1/2 translate-y-1/2"></div>
+              <div className="relative z-10">
+                <h2 className="mb-6 text-primary-foreground">Get in Touch</h2>
+                <p className="mx-auto max-w-2xl text-xl text-primary-foreground/90 mb-8">
+                  Want to chat? Feel free to reach out via email or connect
+                  with me on social media.
+                </p>
+                <div className="flex flex-row gap-4 justify-center mb-8">
+                  {Object.entries(DATA.contact.social)
+                    .filter(([, social]) => social.navbar)
+                    .map(([name, social]) => (
+                      <Link
+                        key={name}
+                        href={social.url}
+                        target="_blank"
+                        className="size-14 flex items-center justify-center thick-border border-primary-foreground bg-transparent hover:bg-primary-foreground hover:text-primary transition-all duration-300"
+                        aria-label={name}
+                      >
+                        <social.icon className="size-6" />
+                      </Link>
+                    ))}
+                </div>
+                <a
+                  href={`mailto:${DATA.contact.email}`}
+                  className="inline-block thick-border border-primary-foreground bg-primary-foreground text-primary px-8 py-4 hover:bg-transparent hover:text-primary-foreground transition-all duration-300 font-medium uppercase text-sm tracking-wider"
+                >
+                  Send an Email
+                </a>
+              </div>
+            </div>
+          </BlurFade>
+        </div>
+      </section>
+    </main>
   );
 }

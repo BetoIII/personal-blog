@@ -171,8 +171,9 @@ function transformNotionPageToProject(page: PageObjectResponse): NotionPortfolio
                "";
 
   // Get dates - could be a text field or date range
-  const dates = getRichText(properties.Dates) || 
-                getRichText(properties.Timeline) || 
+  const dates = getRichText(properties.Time) ||
+                getRichText(properties.Dates) ||
+                getRichText(properties.Timeline) ||
                 getRichText(properties.Period) || "";
 
   // Get active status
@@ -181,7 +182,8 @@ function transformNotionPageToProject(page: PageObjectResponse): NotionPortfolio
                  getSelect(properties.Status) === "Active";
 
   // Get technologies/tech stack
-  const technologies = getMultiSelect(properties.Technologies) || 
+  const technologies = getMultiSelect(properties.Skills) ||
+                       getMultiSelect(properties.Technologies) ||
                        getMultiSelect(properties["Tech Stack"]) ||
                        getMultiSelect(properties.Tags) ||
                        [];
@@ -204,8 +206,8 @@ function transformNotionPageToProject(page: PageObjectResponse): NotionPortfolio
   const links = parseLinks(linksText);
   
   // Also check for specific link fields
-  const websiteUrl = getUrl(properties.Website) || getUrl(properties.URL);
-  const githubUrl = getUrl(properties.GitHub) || getUrl(properties.Source);
+  const websiteUrl = getUrl(properties.website) || getUrl(properties.Website) || getUrl(properties.URL);
+  const githubUrl = getUrl(properties["Github Repo"]) || getUrl(properties.GitHub) || getUrl(properties.Source);
   
   if (websiteUrl && !links.find(l => l.type === "Website")) {
     links.push({ type: "Website", url: websiteUrl });
@@ -257,8 +259,10 @@ export async function getAllProjects(): Promise<NotionPortfolioProject[]> {
     // Sort by order (if set), then by featured status, then by title
     return projects.sort((a, b) => {
       // If both have order numbers, sort by order
-      if (a.order !== 0 && b.order !== 0 && a.order !== b.order) {
-        return a.order - b.order;
+      const orderA = a.order ?? 0;
+      const orderB = b.order ?? 0;
+      if (orderA !== 0 && orderB !== 0 && orderA !== orderB) {
+        return orderA - orderB;
       }
       // Featured items first
       if (a.featured !== b.featured) return a.featured ? -1 : 1;

@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -53,7 +52,7 @@ export function ProjectCard({
 
   const ImageContainer = (!onClick && href) ? Link : "div";
   const imageContainerProps = (!onClick && href)
-    ? { href, target: "_blank" }
+    ? { href, target: "_blank" as const }
     : {};
 
   return (
@@ -71,6 +70,7 @@ export function ProjectCard({
           className
         )}
       >
+        {/* @ts-expect-error - Dynamic component type requires type assertion */}
         <ImageContainer
           {...imageContainerProps}
           className={cn("block relative overflow-hidden w-full", !onClick && href && "cursor-pointer")}

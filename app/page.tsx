@@ -9,6 +9,8 @@ import { ResumeCard } from "@/components/resume-card";
 import { ProjectCard } from "@/components/project-card";
 import { DATA } from "@/lib/portfolio-data";
 import { getCachedPosts } from "@/lib/blog-source";
+import { getCachedProjects } from "@/lib/portfolio-source";
+import { Icons } from "@/components/icons";
 import Markdown from "react-markdown";
 
 const BLUR_FADE_DELAY = 0.04;
@@ -21,6 +23,18 @@ const formatDate = (date: Date): string => {
   });
 };
 
+// Helper function to get icon for link type
+function getLinkIcon(type: string) {
+  const typeLower = type.toLowerCase();
+  if (typeLower.includes("github") || typeLower.includes("source")) {
+    return <Icons.github className="size-3" />;
+  }
+  if (typeLower.includes("website") || typeLower.includes("demo") || typeLower.includes("live")) {
+    return <Icons.globe className="size-3" />;
+  }
+  return <Icons.globe className="size-3" />;
+}
+
 export default async function Page() {
   const allPages = await getCachedPosts();
   const sortedBlogs = allPages.sort((a, b) => {
@@ -31,6 +45,28 @@ export default async function Page() {
 
   // Get the 3 latest blog posts
   const latestBlogs = sortedBlogs.slice(0, 3);
+
+  // Fetch projects from Notion
+  const notionProjects = await getCachedProjects();
+
+  // Use Notion projects if available, otherwise fall back to hardcoded data
+  const projects = notionProjects.length > 0
+    ? notionProjects.slice(0, 2).map(p => ({
+        title: p.data.title,
+        href: p.data.links.find(l => l.type.toLowerCase().includes("website"))?.href || p.data.links[0]?.href || "#",
+        dates: p.data.dates,
+        active: p.data.active,
+        description: p.data.description,
+        technologies: p.data.technologies,
+        links: p.data.links.map(link => ({
+          type: link.type,
+          href: link.href,
+          icon: getLinkIcon(link.type),
+        })),
+        image: p.data.image || "",
+        video: p.data.video || "",
+      }))
+    : DATA.projects.slice(0, 2);
 
   return (
     <main className="flex flex-col min-h-screen">
@@ -205,7 +241,7 @@ export default async function Page() {
             </div>
           </BlurFade>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {DATA.projects.map((project, id) => (
+            {projects.map((project, id) => (
               <BlurFade
                 key={project.title}
                 delay={BLUR_FADE_DELAY * 14 + id * 0.15}

@@ -43,10 +43,17 @@ export default async function PortfolioPage() {
         slug: `project-${idx}`,
       }));
 
+  // Extract all unique skills from projects
+  const allSkills = new Set<string>();
+  projects.forEach(project => {
+    project.technologies.forEach(tech => allSkills.add(tech));
+  });
+  const skills = Array.from(allSkills).sort();
+
   return (
     <PortfolioClient
       projects={projects}
-      skills={DATA.skills}
+      skills={skills}
       contactEmail={DATA.contact.email}
     />
   );

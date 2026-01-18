@@ -544,16 +544,16 @@ export default function ROICalculatorPage() {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <a
-                href="#"
+                href="#contact"
                 className="thick-border border-primary-foreground bg-primary-foreground text-primary px-10 py-5 hover:bg-foreground hover:text-background transition-all duration-300 font-medium uppercase text-sm tracking-wider"
               >
-                Get Started
+                Get in Touch
               </a>
               <a
-                href="#"
+                href="https://tidycal.com/beto1/ai-consultation"
                 className="thick-border border-primary-foreground bg-transparent text-primary-foreground px-10 py-5 hover:bg-primary-foreground hover:text-primary transition-all duration-300 font-medium uppercase text-sm tracking-wider"
               >
-                Schedule Demo
+                See a Demo
               </a>
             </div>
             <p className="text-xs text-primary-foreground/70 mt-8 max-w-2xl mx-auto">

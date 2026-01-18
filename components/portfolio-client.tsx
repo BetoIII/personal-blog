@@ -286,17 +286,11 @@ export function PortfolioClient({ projects, skills, contactEmail }: PortfolioCli
                 </p>
                 <div className="flex flex-wrap gap-4 justify-center">
                   <a
-                    href={`mailto:${contactEmail}`}
+                    href={`/#contact`}
                     className="thick-border border-background bg-background text-foreground px-8 py-4 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 font-medium uppercase text-sm tracking-wider"
                   >
                     Get in Touch
-                  </a>
-                  <Link
-                    href="/#work"
-                    className="thick-border border-background bg-transparent text-background px-8 py-4 hover:bg-background hover:text-foreground transition-all duration-300 font-medium uppercase text-sm tracking-wider"
-                  >
-                    View Experience
-                  </Link>
+                  </a>            
                 </div>
               </div>
             </BlurFade>

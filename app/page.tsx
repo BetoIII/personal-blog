@@ -266,6 +266,17 @@ export default async function Page() {
               </BlurFade>
             ))}
           </div>
+
+          <BlurFade delay={BLUR_FADE_DELAY * 15}>
+            <div className="flex justify-center mt-16">
+              <Link
+                href="/portfolio"
+                className="thick-border bg-primary text-primary-foreground px-8 py-4 hover:bg-foreground hover:text-background transition-all duration-300 font-medium uppercase text-sm tracking-wider inline-block"
+              >
+                View Portfolio →
+              </Link>
+            </div>
+          </BlurFade>
         </div>
         <div className="absolute top-1/2 right-0 w-1/3 h-1/3 bg-secondary opacity-20 -z-10 transform translate-x-1/3"></div>
       </section>

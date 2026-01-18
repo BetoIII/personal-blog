@@ -54,7 +54,7 @@ export default async function BlogPost({ params }: PageProps) {
   const formattedDate = formatDate(date);
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="bg-background relative">
       <HashScrollHandler />
       <div className="absolute top-0 left-0 z-0 w-full h-[200px] [mask-image:linear-gradient(to_top,transparent_25%,black_95%)]">
         <FlickeringGrid

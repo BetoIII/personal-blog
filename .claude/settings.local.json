@@ -14,7 +14,14 @@
       "Bash(npx tsc:*)",
       "Bash(ls:*)",
       "Bash(git checkout:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(pnpm outdated:*)",
+      "Bash(pnpm view:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm build:*)",
+      "WebFetch(domain:2d88fdd2355c8917.vercel-dns-017.com)",
+      "Skill(figma:implement-design)",
+      "Bash(npm run dev:*)"
     ]
   }
 }

@@ -24,14 +24,12 @@ const getAssetData = async (authorAvatar?: string) => {
     const assetUrls = {
       clashDisplay: `${baseUrl}/fonts/ClashDisplay-Semibold.ttf`,
       cabinetGrotesk: `${baseUrl}/fonts/CabinetGrotesk-Medium.ttf`,
-      logo: `${baseUrl}/magicui-logo.png`,
       ...(authorAvatar && { authorAvatar: `${baseUrl}${authorAvatar}` }),
     };
 
     const fetchPromises = [
       fetch(assetUrls.clashDisplay),
       fetch(assetUrls.cabinetGrotesk),
-      fetch(assetUrls.logo),
     ];
 
     if (assetUrls.authorAvatar) {
@@ -39,17 +37,16 @@ const getAssetData = async (authorAvatar?: string) => {
     }
 
     const responses = await Promise.all(fetchPromises);
-    const [clashDisplayRes, cabinetGroteskRes, logoRes, authorAvatarRes] =
+    const [clashDisplayRes, cabinetGroteskRes, authorAvatarRes] =
       responses;
 
-    if (!clashDisplayRes.ok || !cabinetGroteskRes.ok || !logoRes.ok) {
+    if (!clashDisplayRes.ok || !cabinetGroteskRes.ok) {
       return null;
     }
 
     const assetPromises = [
       clashDisplayRes.arrayBuffer(),
       cabinetGroteskRes.arrayBuffer(),
-      logoRes.arrayBuffer(),
     ];
 
     if (authorAvatarRes && authorAvatarRes.ok) {
@@ -57,12 +54,8 @@ const getAssetData = async (authorAvatar?: string) => {
     }
 
     const assetBuffers = await Promise.all(assetPromises);
-    const [clashDisplay, cabinetGrotesk, logoImage, authorAvatarImage] =
+    const [clashDisplay, cabinetGrotesk, authorAvatarImage] =
       assetBuffers;
-
-    const logoBase64 = `data:image/png;base64,${Buffer.from(logoImage).toString(
-      "base64"
-    )}`;
 
     let authorAvatarBase64: string | undefined;
     if (authorAvatarImage) {
@@ -74,7 +67,6 @@ const getAssetData = async (authorAvatar?: string) => {
     return {
       clashDisplay,
       cabinetGrotesk,
-      logoBase64,
       authorAvatarBase64,
     };
   } catch (error) {
@@ -199,16 +191,6 @@ export default async function Image({ params }: { params: { slug: string } }) {
         >
           <div style={styles.container}>
             <div style={styles.titleContainer}>
-              <img
-                src={
-                  assetData?.logoBase64 ||
-                  `${process.env.NEXT_PUBLIC_SITE_URL}/magicui-logo.png`
-                }
-                alt="MagicUI Logo"
-                width={80}
-                height={80}
-                style={styles.logo}
-              />
               <h1 style={styles.title}>{page.data.title}</h1>
               {page.data.description && (
                 <p style={styles.summary}>{page.data.description}</p>

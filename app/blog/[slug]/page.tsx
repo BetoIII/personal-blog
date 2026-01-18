@@ -8,7 +8,6 @@ import { TableOfContents } from "@/components/table-of-contents";
 import { MobileTableOfContents } from "@/components/mobile-toc";
 import { AuthorCard } from "@/components/author-card";
 import { ReadMoreSection } from "@/components/read-more-section";
-import { PromoContent } from "@/components/promo-content";
 import { getAuthor, isValidAuthor } from "@/lib/authors";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
 import { HashScrollHandler } from "@/components/hash-scroll-handler";
@@ -138,7 +137,6 @@ export default async function BlogPost({ params }: PageProps) {
             <div className="border border-border rounded-lg p-6 bg-card">
               <TableOfContents />
             </div>
-            <PromoContent variant="desktop" />
           </div>
         </aside>
       </div>

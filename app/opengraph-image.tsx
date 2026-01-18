@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Blog - Magic UI";
+export const alt = "Beto's Blog";
 export const size = {
   width: 1200,
   height: 630,
@@ -15,33 +15,25 @@ const getAssetData = async () => {
     const fontUrls = {
       clashDisplay: `${baseUrl}/fonts/ClashDisplay-Semibold.ttf`,
       cabinetGrotesk: `${baseUrl}/fonts/CabinetGrotesk-Medium.ttf`,
-      logo: `${baseUrl}/magicui-logo.png`,
     };
 
-    const [clashDisplayRes, cabinetGroteskRes, logoRes] = await Promise.all([
+    const [clashDisplayRes, cabinetGroteskRes] = await Promise.all([
       fetch(fontUrls.clashDisplay),
       fetch(fontUrls.cabinetGrotesk),
-      fetch(fontUrls.logo),
     ]);
 
-    if (!clashDisplayRes.ok || !cabinetGroteskRes.ok || !logoRes.ok) {
+    if (!clashDisplayRes.ok || !cabinetGroteskRes.ok) {
       return null;
     }
 
-    const [clashDisplay, cabinetGrotesk, logoImage] = await Promise.all([
+    const [clashDisplay, cabinetGrotesk] = await Promise.all([
       clashDisplayRes.arrayBuffer(),
       cabinetGroteskRes.arrayBuffer(),
-      logoRes.arrayBuffer(),
     ]);
-
-    const logoBase64 = `data:image/png;base64,${Buffer.from(logoImage).toString(
-      "base64"
-    )}`;
 
     return {
       clashDisplay,
       cabinetGrotesk,
-      logoBase64,
     };
   } catch (error) {
     console.error("Failed to load assets:", error);
@@ -104,15 +96,6 @@ export default async function Image() {
           }}
         >
           <div style={styles.container}>
-            <img
-              src={
-                assetData?.logoBase64 ||
-                `${process.env.NEXT_PUBLIC_SITE_URL}/magicui-logo.png`
-              }
-              alt="MagicUI Logo"
-              width={100}
-              height={100}
-            />
             <h1 style={styles.title}>Blog</h1>
             <p style={styles.description}>
               A blog about design, development, and other things.

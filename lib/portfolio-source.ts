@@ -13,6 +13,7 @@ export interface PortfolioProjectData {
     href: string;
     icon?: React.ReactNode;
   }>;
+  role?: string;
   featured?: boolean;
 }
 
@@ -39,6 +40,7 @@ function transformToPortfolioProject(project: NotionPortfolioProject): Portfolio
         type: link.type,
         href: link.url,
       })),
+      role: project.role,
       featured: project.featured,
     },
   };
@@ -81,6 +83,7 @@ export const notionPortfolioSource = {
           type: link.type,
           href: link.url,
         })),
+        role: project.role,
         featured: project.featured,
       },
       content,

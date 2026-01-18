@@ -30,6 +30,7 @@ export interface NotionPortfolioProject {
     type: string;
     url: string;
   }>;
+  role?: string;
   featured?: boolean;
   order?: number;
 }
@@ -162,6 +163,13 @@ function transformNotionPageToProject(page: PageObjectResponse): NotionPortfolio
   // Get description
   const description = getRichText(properties.Description) || getRichText(properties.Summary) || "";
 
+  // Get role - could be select or rich text
+  const role = getSelect(properties.Role) ||
+               getSelect(properties["Beto's Role"]) ||
+               getRichText(properties.Role) ||
+               getRichText(properties["Beto's Role"]) ||
+               "";
+
   // Get dates - could be a text field or date range
   const dates = getRichText(properties.Dates) || 
                 getRichText(properties.Timeline) || 
@@ -226,6 +234,7 @@ function transformNotionPageToProject(page: PageObjectResponse): NotionPortfolio
     thumbnail,
     video,
     links,
+    role,
     featured,
     order,
   };

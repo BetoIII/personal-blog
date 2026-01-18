@@ -29,30 +29,30 @@ export const DATA = {
     { href: "/blog", icon: NotebookIcon, label: "Blog" },
   ],
   contact: {
-    email: "hello@example.com",
+    email: "betoiii@gmail.com",
     tel: "+123456789",
     social: {
-      GitHub: {
-        name: "GitHub",
-        url: "https://github.com/",
-        icon: Icons.github,
+      YouTube: {
+        name: "YouTube",
+        url: "https://www.youtube.com/@betoiii",
+        icon: Icons.youtube,
         navbar: true,
       },
       LinkedIn: {
         name: "LinkedIn",
-        url: "https://linkedin.com/in/",
+        url: "https://www.linkedin.com/in/betojuareziii/",
         icon: Icons.linkedin,
         navbar: true,
       },
       X: {
         name: "X",
-        url: "https://x.com/",
+        url: "https://x.com/betoiii",
         icon: Icons.x,
         navbar: true,
       },
       email: {
         name: "Send Email",
-        url: "mailto:hello@example.com",
+        url: "mailto:betoiii@gmail.com",
         icon: Icons.email,
         navbar: false,
       },

@@ -5,6 +5,9 @@ import { BlurFade } from "@/components/magicui/blur-fade";
 import { Badge } from "@/components/ui/badge";
 import { getCachedPosts } from "@/lib/blog-source";
 
+// Revalidate every 24 hours (86400 seconds)
+export const revalidate = 86400;
+
 const BLUR_FADE_DELAY = 0.04;
 
 const formatDate = (date: Date): string => {

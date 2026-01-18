@@ -112,12 +112,17 @@ function createSlug(title: string): string {
 function transformNotionPageToPost(page: PageObjectResponse): NotionBlogPost {
   const properties = page.properties;
 
-  // Get title
-  const title = getTitle(properties.Title);
+  // Get title - try both "Title" and "Name" properties
+  const title = getTitle(properties.Title) || getTitle(properties.Name);
 
-  // Get status - use "Published" or "Live" status as the published flag
-  const status = getStatus(properties.Status);
-  const published = status === "Published" || status === "Live" || status === "Done";
+  // Get status - check multiple possible property names and values
+  const status = getStatus(properties.Status) || getSelect(properties.Status);
+  const publishedValues = ["Published", "Live", "Done", "published", "live", "done"];
+  
+  // If no status field exists, consider posts published by default
+  // Otherwise check if status is in the published values
+  const hasStatusField = properties.Status !== undefined;
+  const published = hasStatusField ? publishedValues.includes(status) : true;
 
   // Create slug from title if no slug property exists
   const slug = createSlug(title);
@@ -132,17 +137,23 @@ function transformNotionPageToPost(page: PageObjectResponse): NotionBlogPost {
     tags.push(category);
   }
 
+  // Get date - try multiple property names
+  const date = getDate(properties["Published Date"]) || 
+               getDate(properties["Date"]) || 
+               getDate(properties["Created"]) ||
+               page.created_time;
+
   return {
     id: page.id,
     slug: slug,
     title: title,
     description: "", // No description field, will use excerpt from content
-    date: getDate(properties["Published Date"]) || page.created_time,
+    date: date,
     tags: Array.from(new Set(tags)), // Deduplicate tags
     published: published,
     featured: false, // No featured field in your database
-    thumbnail: getUrl(properties["Featured Image"]),
-    author: getPeople(properties.Author),
+    thumbnail: getUrl(properties["Featured Image"]) || getFiles(properties["Cover"]) || getFiles(properties["Image"]),
+    author: getPeople(properties.Author) || getPeople(properties["Created by"]),
     authorImage: "", // No author image field
     readTime: "", // No read time field, could calculate from content
   };
@@ -162,10 +173,15 @@ export async function getAllPosts(): Promise<NotionBlogPost[]> {
     });
 
     // Filter by status and map to blog posts
-    return response.results
+    const allPosts = response.results
       .filter((page): page is PageObjectResponse => "properties" in page)
-      .map(transformNotionPageToPost)
-      .filter((post) => post.published); // Filter for published posts only
+      .map(transformNotionPageToPost);
+    
+    // Debug logging (can be removed in production)
+    console.log(`Fetched ${allPosts.length} total posts from Notion`);
+    console.log(`Posts statuses:`, allPosts.map(p => ({ title: p.title, published: p.published })));
+    
+    return allPosts.filter((post) => post.published); // Filter for published posts only
   } catch (error) {
     console.error("Error fetching posts from Notion:", error);
     return [];

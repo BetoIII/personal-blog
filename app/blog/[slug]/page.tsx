@@ -15,6 +15,9 @@ import { HashScrollHandler } from "@/components/hash-scroll-handler";
 import { notionBlogSource } from "@/lib/blog-source";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 
+// Revalidate every 24 hours (86400 seconds)
+export const revalidate = 86400;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

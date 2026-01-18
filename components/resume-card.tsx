@@ -49,7 +49,7 @@ export const ResumeCard = ({
         <div className="flex-grow items-center flex-col">
           <CardHeader className="p-6">
             <div className="flex items-start justify-between gap-x-4 mb-2">
-              <h3 className="inline-flex items-center justify-center font-serif text-xl font-medium leading-tight group-hover:text-primary transition-colors">
+              <h3 className="inline-flex items-center justify-center font-serif text-2xl font-medium leading-tight group-hover:text-primary transition-colors">
                 {title}
                 <ChevronRightIcon
                   className={cn(
@@ -58,11 +58,11 @@ export const ResumeCard = ({
                   )}
                 />
               </h3>
-              <div className="text-sm tabular-nums text-muted-foreground text-right whitespace-nowrap font-mono">
+              <div className="text-sm tabular-nums text-muted-foreground text-right whitespace-nowrap font-mono font-bold">
                 {period}
               </div>
             </div>
-            {subtitle && <div className="font-sans text-base text-muted-foreground mb-3">{subtitle}</div>}
+            {subtitle && <div className="font-sans text-base font-medium mb-3 text-xl">{subtitle}</div>}
             {badges && badges.length > 0 && (
               <div className="flex gap-2 mb-3">
                 {badges.map((badge, index) => (

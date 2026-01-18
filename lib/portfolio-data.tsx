@@ -8,22 +8,10 @@ export const DATA = {
   location: "San Francisco, CA",
   locationLink: "https://www.google.com/maps/place/sanfrancisco",
   description:
-    "Software Engineer and entrepreneur building tools that solve real problems.",
+    "I'm an AI-obsessive and entrepreneur and I love building tools and automationsthat solve real problems.",
   summary:
-    "I'm a full-stack software engineer with a passion for creating elegant solutions to complex problems. I love building products that make a difference and sharing what I learn along the way.",
+    "I specialize in taking AI-powered products from prototype to production, with deep experience managing technical implementation from requirements gathering through production deployment. I particularly enjoy building products for the real estate industry.",
   avatarUrl: "/avatar.png",
-  skills: [
-    "React",
-    "Next.js",
-    "TypeScript",
-    "Node.js",
-    "Python",
-    "PostgreSQL",
-    "MongoDB",
-    "AWS",
-    "Docker",
-    "TailwindCSS",
-  ],
   navbar: [
     { href: "/", icon: HomeIcon, label: "Home" },
     { href: "/blog", icon: NotebookIcon, label: "Blog" },
@@ -91,8 +79,8 @@ export const DATA = {
       location: "Austin, TX",
       title: "Principal Product Manager",
       logoUrl: "/keller-logo.png",
-      start: "Jan 2023",
-      end: "Present",
+      start: "May 2018",
+      end: "Feb 2020",
       description:
         "Venture advisor and founding product manager of KellerCovered, a homeowner's insurance marketplace.",
     },

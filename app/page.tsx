@@ -147,7 +147,7 @@ export default async function Page() {
             <div className="lg:col-span-8">
               <BlurFade delay={BLUR_FADE_DELAY * 6}>
                 <div className="thick-border bg-background p-8 md:p-12">
-                  <Markdown className="prose prose-lg max-w-full text-pretty font-sans text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
+                  <Markdown className="text-justify prose prose-lg max-w-full text-pretty font-sans text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
                     {DATA.summary}
                   </Markdown>
                 </div>

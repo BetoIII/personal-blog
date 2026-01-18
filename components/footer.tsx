@@ -16,8 +16,8 @@ export default function Footer() {
       {/* Decorative top border */}
       <div className="w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-24 md:pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-12">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-6 pb-12 md:pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
           {/* Brand section */}
           <div className="md:col-span-5">
             <h3 className="font-serif text-3xl font-medium mb-4">

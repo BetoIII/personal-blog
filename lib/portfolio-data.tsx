@@ -8,7 +8,7 @@ export const DATA = {
   location: "San Francisco, CA",
   locationLink: "https://www.google.com/maps/place/sanfrancisco",
   description:
-    "I'm an AI-obsessive and entrepreneur and I love building tools and automationsthat solve real problems.",
+    "I'm a technologist and entrepreneur who loves building tools and automations that solve real problems.",
   summary:
     "I specialize in taking AI-powered products from prototype to production, with deep experience managing technical implementation from requirements gathering through production deployment. I particularly enjoy building products for the real estate industry.",
   avatarUrl: "/avatar.png",

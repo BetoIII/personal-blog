@@ -98,7 +98,7 @@ export default async function Page() {
                 </p>
               </BlurFade>
               <BlurFade delay={BLUR_FADE_DELAY * 4}>
-                <div className="mt-12 flex flex-wrap gap-4">
+                <div className="my-12 flex flex-wrap gap-4">
                   <a
                     href="#contact"
                     className="thick-border bg-primary text-primary-foreground px-8 py-4 hover:bg-foreground hover:text-background transition-all duration-300 font-medium uppercase text-sm tracking-wider"
@@ -147,7 +147,7 @@ export default async function Page() {
             <div className="lg:col-span-8">
               <BlurFade delay={BLUR_FADE_DELAY * 6}>
                 <div className="thick-border bg-background p-8 md:p-12">
-                  <Markdown className="text-justify prose prose-lg max-w-full text-pretty font-sans text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
+                  <Markdown className="text-justify prose prose-lg text-lg max-w-full text-pretty font-sans text-foreground prose-headings:font-serif prose-headings:text-foreground prose-p:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
                     {DATA.summary}
                   </Markdown>
                 </div>
@@ -216,7 +216,7 @@ export default async function Page() {
                 ))}
               </div>
             </div>
-            <div>
+            <div className="lg:col-span-4">
               <BlurFade delay={BLUR_FADE_DELAY * 10}>
                 <div className="mb-8">
                   <h2 className="mb-4">Skills</h2>

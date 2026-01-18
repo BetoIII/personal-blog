@@ -36,7 +36,7 @@ export const ResumeCard = ({
       target={href ? "_blank" : undefined}
     >
       <Card className="flex thick-border bg-card hover-lift transition-all duration-300">
-        <div className="flex-none p-6">
+        <div className="flex-shrink-0 py-6 float-right ml-6">
           <Avatar className="thick-border size-16 bg-muted">
             <AvatarImage
               src={logoUrl}
@@ -48,8 +48,8 @@ export const ResumeCard = ({
         </div>
         <div className="flex-grow items-center flex-col">
           <CardHeader className="p-6">
-            <div className="flex items-start justify-between gap-x-4 mb-2">
-              <h3 className="inline-flex items-center justify-center font-serif text-2xl font-medium leading-tight group-hover:text-primary transition-colors">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-x-4 mb-2">
+              <h3 className="inline-flex items-center justify-start font-serif text-2xl font-medium leading-tight group-hover:text-primary transition-colors">
                 {title}
                 <ChevronRightIcon
                   className={cn(
@@ -58,11 +58,11 @@ export const ResumeCard = ({
                   )}
                 />
               </h3>
-              <div className="text-sm tabular-nums text-muted-foreground text-right whitespace-nowrap font-mono font-bold">
+              <div className="text-sm tabular-nums text-accent sm:text-right whitespace-nowrap font-mono font-bold flex-shrink-0">
                 {period}
               </div>
             </div>
-            {subtitle && <div className="font-sans text-base font-medium mb-3 text-xl">{subtitle}</div>}
+            {subtitle && <div className="font-sans text-base mb-3 text-xl">{subtitle}</div>}
             {badges && badges.length > 0 && (
               <div className="flex gap-2 mb-3">
                 {badges.map((badge, index) => (
@@ -77,7 +77,7 @@ export const ResumeCard = ({
               </div>
             )}
             {description && (
-              <div className="mt-2 text-base leading-relaxed">{description}</div>
+              <div className="mt-2 text-lg leading-relaxed">{description}</div>
             )}
           </CardHeader>
         </div>

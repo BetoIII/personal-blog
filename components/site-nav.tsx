@@ -65,6 +65,18 @@ export function SiteNav() {
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
           </Link>
 
+          <Link
+            href="/roi-calculator"
+            className={`relative group px-4 md:px-6 py-3 font-medium uppercase text-xs md:text-sm tracking-wider transition-all duration-300 ${
+              pathname === "/roi-calculator"
+                ? "text-primary"
+                : "text-foreground hover:text-primary"
+            }`}
+          >
+            ROI Calc
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+          </Link>
+
           {/* Theme Toggle */}
           <div className="ml-2 md:ml-4">
             <ThemeToggle />

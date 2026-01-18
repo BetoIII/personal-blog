@@ -1,7 +1,44 @@
+import { Metadata } from "next";
 import { DATA } from "@/lib/portfolio-data";
 import { getCachedProjects } from "@/lib/portfolio-source";
 import { Icons } from "@/components/icons";
 import { PortfolioClient } from "@/components/portfolio-client";
+import { siteConfig } from "@/lib/site";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Portfolio",
+    description:
+      "Explore my portfolio of AI solutions, real estate technology, and product management projects. Innovative work in voice AI, GTM strategy, and startup advising.",
+    keywords: [
+      "Portfolio",
+      "AI Solutions Architect",
+      "Real Estate Technology",
+      "Product Management",
+      "Voice AI",
+      "GTM Strategy",
+      "Startup Advisor",
+      "Software Projects",
+    ],
+    openGraph: {
+      title: "Portfolio - Beto's Blog",
+      description:
+        "Explore my portfolio of AI solutions, real estate technology, and product management projects.",
+      type: "website",
+      url: `${siteConfig.url}/portfolio`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Portfolio - Beto's Blog",
+      description:
+        "Explore my portfolio of AI solutions, real estate technology, and product management projects.",
+      creator: "@betoiii",
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/portfolio`,
+    },
+  };
+}
 
 // Helper function to get icon for link type
 function getLinkIcon(type: string) {

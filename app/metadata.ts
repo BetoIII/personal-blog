@@ -2,16 +2,20 @@ import { Metadata } from "next";
 import { siteConfig } from "@/lib/site";
 
 export const metadataKeywords = [
-    "Blog",
-    "React",
-    "Next.js Blog",
-    "React Blog",
-    "Web Development",
-    "Tutorials",
-    "MDX Blog",
-    "Modern Blog Template",
-    "Technology",
+    "AI Solutions Architect",
+    "GTM Strategy",
+    "Voice AI",
+    "Product Management",
+    "Real Estate Technology",
+    "Startup Advisor",
     "Software Engineering",
+    "AI Integration",
+    "Technical Leadership",
+    "Product Development",
+    "Real Estate Tech",
+    "Go-to-Market",
+    "Technology Blog",
+    "AI Strategy",
 ]
 
 export const metadata: Metadata = {
@@ -37,7 +41,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: siteConfig.name,
         description: siteConfig.description,
-        creator: "@dillionverma",
+        creator: "@betoiii",
     },
     robots: {
         index: true,
@@ -49,5 +53,8 @@ export const metadata: Metadata = {
             "max-image-preview": "large",
             "max-snippet": -1,
         },
+    },
+    alternates: {
+        canonical: siteConfig.url,
     },
 };

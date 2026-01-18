@@ -13,6 +13,8 @@ import { FlickeringGrid } from "@/components/magicui/flickering-grid";
 import { HashScrollHandler } from "@/components/hash-scroll-handler";
 import { notionBlogSource } from "@/lib/blog-source";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
+import { ArticleSchema, BreadcrumbSchema } from "@/components/structured-data";
+import { siteConfig } from "@/lib/site";
 
 // Revalidate every 24 hours (86400 seconds)
 export const revalidate = 86400;
@@ -55,6 +57,23 @@ export default async function BlogPost({ params }: PageProps) {
 
   return (
     <div className="bg-background relative">
+      <ArticleSchema
+        title={page.data.title}
+        description={page.data.description}
+        url={`${siteConfig.url}/blog/${slug}`}
+        datePublished={page.data.date}
+        author={page.data.author || "Beto Juarez III"}
+        authorUrl={siteConfig.url}
+        image={page.data.thumbnail}
+        tags={page.data.tags}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: siteConfig.url },
+          { name: "Blog", url: `${siteConfig.url}/blog` },
+          { name: page.data.title, url: `${siteConfig.url}/blog/${slug}` },
+        ]}
+      />
       <HashScrollHandler />
       <div className="absolute top-0 left-0 z-0 w-full h-[200px] [mask-image:linear-gradient(to_top,transparent_25%,black_95%)]">
         <FlickeringGrid

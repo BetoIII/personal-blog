@@ -11,6 +11,7 @@ import { DATA } from "@/lib/portfolio-data";
 import { getCachedPosts } from "@/lib/blog-source";
 import { getCachedProjects } from "@/lib/portfolio-source";
 import { Icons } from "@/components/icons";
+import { HomePageStructuredData } from "@/components/structured-data";
 import Markdown from "react-markdown";
 
 const BLUR_FADE_DELAY = 0.04;
@@ -77,6 +78,7 @@ export default async function Page() {
 
   return (
     <main className="flex flex-col min-h-screen">
+      <HomePageStructuredData />
       <section id="hero" className="relative overflow-hidden section-padding px-6 md:px-12">
         <div className="mx-auto w-full max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">

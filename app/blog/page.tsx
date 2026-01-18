@@ -1,12 +1,49 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Metadata } from "next";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { Badge } from "@/components/ui/badge";
 import { getCachedPosts } from "@/lib/blog-source";
+import { siteConfig } from "@/lib/site";
 
 // Revalidate every 24 hours (86400 seconds)
 export const revalidate = 86400;
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Blog",
+    description:
+      "Writing about software engineering, technology, and building products that matter. Explore articles on AI, product management, and real estate technology.",
+    keywords: [
+      "Blog",
+      "Software Engineering",
+      "AI Solutions",
+      "Product Management",
+      "Real Estate Technology",
+      "GTM Strategy",
+      "Technology Articles",
+      "Voice AI",
+    ],
+    openGraph: {
+      title: "Blog - Beto's Blog",
+      description:
+        "Writing about software engineering, technology, and building products that matter.",
+      type: "website",
+      url: `${siteConfig.url}/blog`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Blog - Beto's Blog",
+      description:
+        "Writing about software engineering, technology, and building products that matter.",
+      creator: "@betoiii",
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/blog`,
+    },
+  };
+}
 
 const BLUR_FADE_DELAY = 0.04;
 

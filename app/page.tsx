@@ -68,6 +68,13 @@ export default async function Page() {
       }))
     : DATA.projects.slice(0, 2);
 
+  // Extract all unique skills from all Notion projects
+  const allSkills = new Set<string>();
+  notionProjects.forEach(project => {
+    project.data.technologies.forEach(tech => allSkills.add(tech));
+  });
+  const skills = Array.from(allSkills).sort();
+
   return (
     <main className="flex flex-col min-h-screen">
       <section id="hero" className="relative overflow-hidden section-padding px-6 md:px-12">
@@ -76,7 +83,7 @@ export default async function Page() {
             <div className="lg:col-span-8 relative z-10">
               <BlurFade delay={BLUR_FADE_DELAY}>
                 <div className="inline-block mb-4 px-4 py-2 thick-border bg-primary text-primary-foreground">
-                  <span className="text-sm font-medium uppercase tracking-wider">Software Engineer</span>
+                  <span className="text-sm font-medium uppercase tracking-wider">GTM & AI Advisor</span>
                 </div>
               </BlurFade>
               <BlurFadeText
@@ -217,7 +224,7 @@ export default async function Page() {
                 </div>
               </BlurFade>
               <div className="flex flex-wrap gap-3">
-                {DATA.skills.map((skill, id) => (
+                {skills.map((skill, id) => (
                   <BlurFade key={skill} delay={BLUR_FADE_DELAY * 12 + id * 0.05}>
                     <Badge className="text-base px-4 py-2">{skill}</Badge>
                   </BlurFade>

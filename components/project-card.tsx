@@ -40,6 +40,10 @@ export function ProjectCard({
   links,
   className,
 }: ProjectCardProps) {
+  // Check if image is an emoji (single character or emoji sequence)
+  const isEmoji = image && image.length <= 4 && !image.startsWith('http');
+  const isImageUrl = image && image.startsWith('http');
+
   return (
     <Card
       className={cn(
@@ -62,7 +66,7 @@ export function ProjectCard({
             className="pointer-events-none mx-auto h-64 w-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
           />
         )}
-        {image && (
+        {isImageUrl && (
           <Image
             src={image}
             alt={title}
@@ -70,6 +74,13 @@ export function ProjectCard({
             height={300}
             className="h-64 w-full overflow-hidden object-cover object-top transition-transform duration-500 group-hover:scale-110"
           />
+        )}
+        {isEmoji && (
+          <div className="h-64 w-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+            <div className="text-9xl">
+              {image}
+            </div>
+          </div>
         )}
         {!image && !video && (
           <div className="h-64 w-full bg-secondary flex items-center justify-center">

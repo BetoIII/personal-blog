@@ -6,9 +6,11 @@ A modern, responsive blog built with Next.js 15, Fumadocs MDX, and Tailwind CSS.
 
 - 🎨 **Modern Design** - Clean, responsive interface
 - 📝 **MDX Support** - Write blog posts in MDX with full component support
+- 🔌 **Notion Integration** - Use Notion as CMS for blog and portfolio
 - 🌙 **Dark Mode** - Built-in dark/light theme toggle
 - 🏷️ **Tags & Categories** - Organize content with tags
 - ⭐ **Featured Posts** - Highlight your best articles
+- 💼 **Portfolio Section** - Showcase your projects from Notion
 - 📱 **Mobile Responsive** - Perfect on all devices
 - 🚀 **Fast Performance** - Optimized with Next.js 15
 
@@ -29,8 +31,32 @@ pnpm dev
 pnpm build
 ```
 
+## 🔌 Notion Integration
+
+This blog supports two Notion integrations:
+
+### Blog Posts (Notion CMS)
+Connect your Notion database to manage blog posts dynamically.
+
+**Setup:**
+1. See `SETUP.md` for blog Notion integration
+2. Test: `pnpm test:notion`
+
+### Portfolio (Notion CMS)
+Manage your portfolio projects in a separate Notion workspace.
+
+**Setup:**
+1. See `SETUP_SUMMARY.md` or `PORTFOLIO_QUICKSTART.md` for portfolio setup
+2. Test: `pnpm test:portfolio`
+
+Both integrations work independently - they can be in different Notion workspaces!
+
 ## ✍️ Adding Blog Posts
 
+### Option 1: Notion (Recommended)
+Add posts directly to your Notion database. Changes appear automatically!
+
+### Option 2: MDX Files
 Create a new MDX file in `blog/content/` with format `your-post-title.mdx`:
 
 ````mdx
@@ -106,10 +132,27 @@ Then reference your author in blog posts using the key (e.g., `author: "yourname
 ## 📖 Technologies Used
 
 - **Next.js 15** - React framework with App Router
+- **Notion API** - Headless CMS for blog and portfolio
 - **Fumadocs MDX** - MDX processing and components
 - **Tailwind CSS** - Utility-first CSS framework
 - **TypeScript** - Type-safe JavaScript
 - **Geist Font** - Modern typography
+
+## 🧪 Testing & Scripts
+
+```bash
+# Test blog Notion connection
+pnpm test:notion
+
+# Test portfolio Notion connection
+pnpm test:portfolio
+
+# Development server
+pnpm dev
+
+# Production build
+pnpm build
+```
 
 ## 🤝 Contributing
 

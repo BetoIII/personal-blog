@@ -7,6 +7,27 @@ const nextConfig: NextConfig = {
   transpilePackages: ["geist"],
   // Suppress sourcemap warnings in development
   productionBrowserSourceMaps: false,
+  // Allow images from Notion
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "prod-files-secure.s3.us-west-2.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.notion.so",
+      },
+      {
+        protocol: "https",
+        hostname: "notion.so",
+      },
+    ],
+  },
   experimental: {
     // Suppress turbopack sourcemap warnings
     turbo: {

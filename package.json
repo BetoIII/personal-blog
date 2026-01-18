@@ -7,7 +7,9 @@
     "build": "fumadocs-mdx && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "fumadocs-mdx"
+    "postinstall": "fumadocs-mdx",
+    "test:notion": "node scripts/test-notion-connection.js",
+    "test:portfolio": "node scripts/test-portfolio-notion-connection.js"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",

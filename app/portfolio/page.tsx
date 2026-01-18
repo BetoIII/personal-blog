@@ -1,13 +1,48 @@
-import { Suspense } from "react";
 import Link from "next/link";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { ProjectCard } from "@/components/project-card";
 import { Badge } from "@/components/ui/badge";
 import { DATA } from "@/lib/portfolio-data";
+import { getCachedProjects } from "@/lib/portfolio-source";
+import { Icons } from "@/components/icons";
 
 const BLUR_FADE_DELAY = 0.04;
 
-export default function PortfolioPage() {
+// Helper function to get icon for link type
+function getLinkIcon(type: string) {
+  const typeLower = type.toLowerCase();
+  if (typeLower.includes("github") || typeLower.includes("source")) {
+    return <Icons.github className="size-3" />;
+  }
+  if (typeLower.includes("website") || typeLower.includes("demo") || typeLower.includes("live")) {
+    return <Icons.globe className="size-3" />;
+  }
+  return <Icons.globe className="size-3" />;
+}
+
+export default async function PortfolioPage() {
+  // Fetch projects from Notion
+  const notionProjects = await getCachedProjects();
+  
+  // Use Notion projects if available, otherwise fall back to hardcoded data
+  const projects = notionProjects.length > 0 
+    ? notionProjects.map(p => ({
+        title: p.data.title,
+        href: p.data.links.find(l => l.type.toLowerCase().includes("website"))?.href || p.data.links[0]?.href || "#",
+        dates: p.data.dates,
+        active: p.data.active,
+        description: p.data.description,
+        technologies: p.data.technologies,
+        links: p.data.links.map(link => ({
+          type: link.type,
+          href: link.href,
+          icon: getLinkIcon(link.type),
+        })),
+        image: p.data.image || "",
+        video: p.data.video || "",
+      }))
+    : DATA.projects;
+
   return (
     <main className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -54,7 +89,7 @@ export default function PortfolioPage() {
           </BlurFade>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {DATA.projects.slice(0, 2).map((project, id) => (
+            {projects.slice(0, 2).map((project, id) => (
               <BlurFade
                 key={project.title}
                 delay={BLUR_FADE_DELAY * 5 + id * 0.15}
@@ -83,7 +118,7 @@ export default function PortfolioPage() {
       </section>
 
       {/* All Projects */}
-      {DATA.projects.length > 2 && (
+      {projects.length > 2 && (
         <section className="section-padding px-6 md:px-12 bg-muted">
           <div className="mx-auto w-full max-w-7xl">
             <BlurFade delay={BLUR_FADE_DELAY * 7}>
@@ -99,7 +134,7 @@ export default function PortfolioPage() {
             </BlurFade>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {DATA.projects.slice(2).map((project, id) => (
+              {projects.slice(2).map((project, id) => (
                 <BlurFade
                   key={project.title}
                   delay={BLUR_FADE_DELAY * 8 + id * 0.15}

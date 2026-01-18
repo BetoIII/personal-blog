@@ -324,12 +324,12 @@ export default async function BlogPage({
                 </p>
               </div>
               <div className="flex justify-center lg:justify-end">
-                <a
+                <Link
                   href="/#contact"
                   className="thick-border border-primary-foreground bg-primary-foreground text-primary px-8 py-4 hover:bg-transparent hover:text-primary-foreground transition-all duration-300 font-medium uppercase text-sm tracking-wider inline-block"
                 >
                   Get in Touch
-                </a>
+                </Link>
               </div>
             </div>
           </BlurFade>

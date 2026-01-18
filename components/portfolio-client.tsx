@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { ProjectCard } from "@/components/project-card";
 import { Badge } from "@/components/ui/badge";
@@ -34,7 +33,7 @@ interface PortfolioClientProps {
   contactEmail: string;
 }
 
-export function PortfolioClient({ projects, skills, contactEmail }: PortfolioClientProps) {
+export function PortfolioClient({ projects, skills }: PortfolioClientProps) {
   const [selectedProject, setSelectedProject] = useState<(Project & { content?: string }) | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());

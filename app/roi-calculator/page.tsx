@@ -129,7 +129,7 @@ export default function ROICalculatorPage() {
                   <p className="text-muted-foreground">
                     Voice AI achieves 25-35% pickup rates vs. 5-8% industry
                     average for cold outreach, reconnecting you with aged leads
-                    others can't reach.
+                    others can&apos;t reach.
                   </p>
                 </div>
               </div>
@@ -503,7 +503,7 @@ export default function ROICalculatorPage() {
                   <li className="flex items-start">
                     <span className="text-primary mr-3 mt-1 font-serif">→</span>
                     <span>
-                      Reconnect with pre-approved leads who didn't close
+                      Reconnect with pre-approved leads who didn&apos;t close
                     </span>
                   </li>
                   <li className="flex items-start">

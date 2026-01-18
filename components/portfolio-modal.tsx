@@ -169,7 +169,7 @@ export function PortfolioModal({ isOpen, onClose, project }: PortfolioModalProps
               {project.role && (
                 <div className="grid grid-cols-[140px_1fr] gap-4 items-start">
                   <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider pt-1">
-                    Beto's Role
+                    Beto&apos;s Role
                   </div>
                   <div className="text-base text-foreground">
                     {project.role}

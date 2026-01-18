@@ -178,6 +178,7 @@
     font-size: 18px;
     line-height: 1.6;
     position: relative;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   body::before {

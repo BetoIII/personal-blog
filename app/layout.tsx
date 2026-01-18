@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces } from "next/font/google";
 import { Instrument_Sans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SiteNav } from "@/components/site-nav";
 import { siteConfig } from "@/lib/site";
 import { metadataKeywords } from "./metadata";
 import Footer from "@/components/footer";
@@ -51,6 +52,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <SiteNav />
           {children}
           <Footer />
         </ThemeProvider>

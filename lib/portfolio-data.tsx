@@ -11,7 +11,7 @@ export const DATA = {
     "Software Engineer and entrepreneur building tools that solve real problems.",
   summary:
     "I'm a full-stack software engineer with a passion for creating elegant solutions to complex problems. I love building products that make a difference and sharing what I learn along the way.",
-  avatarUrl: "/avatar.jpg",
+  avatarUrl: "/avatar.png",
   skills: [
     "React",
     "Next.js",

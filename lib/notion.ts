@@ -138,7 +138,7 @@ function transformNotionPageToPost(page: PageObjectResponse): NotionBlogPost {
     title: title,
     description: "", // No description field, will use excerpt from content
     date: getDate(properties["Published Date"]) || page.created_time,
-    tags: tags,
+    tags: Array.from(new Set(tags)), // Deduplicate tags
     published: published,
     featured: false, // No featured field in your database
     thumbnail: getUrl(properties["Featured Image"]),

@@ -5,6 +5,7 @@ import {
   PageObjectResponse,
   QueryDatabaseResponse,
 } from "@notionhq/client/build/src/api-endpoints";
+import { getBlobUrl } from "./blob-storage";
 
 // Initialize Notion client for PORTFOLIO (separate workspace)
 const portfolioNotion = new Client({
@@ -154,7 +155,7 @@ function parseLinks(linksText: string): Array<{ type: string; url: string }> {
 }
 
 // Transform Notion page to PortfolioProject
-function transformNotionPageToProject(page: PageObjectResponse): NotionPortfolioProject {
+async function transformNotionPageToProject(page: PageObjectResponse): Promise<NotionPortfolioProject> {
   const properties = page.properties;
 
   // Get title - try multiple property names
@@ -177,7 +178,7 @@ function transformNotionPageToProject(page: PageObjectResponse): NotionPortfolio
                 getRichText(properties.Period) || "";
 
   // Get active status
-  const active = getCheckbox(properties.Active) || 
+  const active = getCheckbox(properties.Active) ||
                  getCheckbox(properties["In Progress"]) ||
                  getSelect(properties.Status) === "Active";
 
@@ -188,27 +189,40 @@ function transformNotionPageToProject(page: PageObjectResponse): NotionPortfolio
                        getMultiSelect(properties.Tags) ||
                        [];
 
-  // Get thumbnail/cover image - prioritize page cover, then page icon, then custom properties
-  const thumbnail = getPageCover(page) ||
-                   getPageIcon(page) ||
-                   getUrl(properties.Thumbnail) || 
-                   getFiles(properties.Image) ||
-                   getFiles(properties.Cover) ||
-                   "";
+  // Create slug from title
+  const slug = createSlug(title);
+
+  // Get thumbnail/cover image - PRIORITIZE BLOB STORAGE for permanent URLs
+  let thumbnail = "";
+
+  // 1. First check if we have a cached blob URL
+  const blobUrl = await getBlobUrl(slug);
+  if (blobUrl) {
+    thumbnail = blobUrl;
+    console.log(`Using blob URL for ${slug}: ${blobUrl}`);
+  } else {
+    // 2. Fall back to Notion URL (temporary)
+    thumbnail = getPageCover(page) ||
+                getPageIcon(page) ||
+                getUrl(properties.Thumbnail) ||
+                getFiles(properties.Image) ||
+                getFiles(properties.Cover) ||
+                "";
+  }
 
   // Get video URL
-  const video = getUrl(properties.Video) || 
+  const video = getUrl(properties.Video) ||
                 getUrl(properties.Demo) ||
                 "";
 
   // Get links - can be a rich text field with format "Type: URL"
   const linksText = getRichText(properties.Links) || "";
   const links = parseLinks(linksText);
-  
+
   // Also check for specific link fields
   const websiteUrl = getUrl(properties.website) || getUrl(properties.Website) || getUrl(properties.URL);
   const githubUrl = getUrl(properties["Github Repo"]) || getUrl(properties.GitHub) || getUrl(properties.Source);
-  
+
   if (websiteUrl && !links.find(l => l.type === "Website")) {
     links.push({ type: "Website", url: websiteUrl });
   }
@@ -221,9 +235,6 @@ function transformNotionPageToProject(page: PageObjectResponse): NotionPortfolio
 
   // Get order for sorting
   const order = getNumber(properties.Order) || getNumber(properties.Sort) || 0;
-
-  // Create slug from title
-  const slug = createSlug(title);
 
   return {
     id: page.id,
@@ -250,10 +261,14 @@ export async function getAllProjects(): Promise<NotionPortfolioProject[]> {
       database_id: PORTFOLIO_DATABASE_ID,
     });
 
-    const projects = response.results
-      .filter((page): page is PageObjectResponse => "properties" in page)
-      .map(transformNotionPageToProject);
-    
+    const pages = response.results
+      .filter((page): page is PageObjectResponse => "properties" in page);
+
+    // Transform all pages (now async)
+    const projects = await Promise.all(
+      pages.map(page => transformNotionPageToProject(page))
+    );
+
     console.log(`Fetched ${projects.length} projects from Notion Portfolio`);
     
     // Sort by order (if set), then by featured status, then by title

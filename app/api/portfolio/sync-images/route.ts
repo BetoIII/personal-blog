@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllProjects } from "@/lib/notion-portfolio";
-import { syncProjectImage, loadBlobCache, clearProjectCache } from "@/lib/blob-storage";
+import { getAllProjects, getProjectContent } from "@/lib/notion-portfolio";
+import { syncProjectImage, loadBlobCache, clearProjectCache, processContentImages } from "@/lib/blob-storage";
 import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +10,7 @@ interface SyncResult {
   projectSlug: string;
   success: boolean;
   blobUrl?: string;
+  contentImagesCount?: number;
   error?: string;
 }
 
@@ -52,19 +53,10 @@ export async function POST(request: NextRequest) {
 
     const results: SyncResult[] = [];
 
-    // Sync each project's image
+    // Sync each project's images (thumbnail + content)
     for (const project of projectsToSync) {
       try {
-        // Skip if no thumbnail
-        if (!project.thumbnail) {
-          console.log(`Skipping ${project.slug} - no thumbnail`);
-          results.push({
-            projectSlug: project.slug,
-            success: true,
-            error: "No thumbnail",
-          });
-          continue;
-        }
+        console.log(`\nSyncing ${project.slug}...`);
 
         // Clear cache if force sync
         if (forceSync) {
@@ -72,22 +64,47 @@ export async function POST(request: NextRequest) {
           await clearProjectCache(project.slug);
         }
 
-        // Sync image
-        const blobUrl = await syncProjectImage(project.slug, project.thumbnail);
+        let thumbnailBlobUrl: string | null = null;
+        let contentImagesCount = 0;
 
-        if (blobUrl) {
-          results.push({
-            projectSlug: project.slug,
-            success: true,
-            blobUrl,
-          });
+        // Sync thumbnail image
+        if (project.thumbnail) {
+          console.log(`Syncing thumbnail for ${project.slug}`);
+          thumbnailBlobUrl = await syncProjectImage(project.slug, project.thumbnail);
+
+          if (!thumbnailBlobUrl) {
+            console.error(`Failed to sync thumbnail for ${project.slug}`);
+          }
         } else {
-          results.push({
-            projectSlug: project.slug,
-            success: false,
-            error: "Failed to upload to blob storage",
-          });
+          console.log(`No thumbnail for ${project.slug}`);
         }
+
+        // Sync content images
+        try {
+          console.log(`Processing content images for ${project.slug}`);
+          const content = await getProjectContent(project.id, project.slug);
+
+          // processContentImages will extract, upload, and cache content images
+          // The return value contains the number of images processed
+          if (content) {
+            const imageRegex = /!\[.*?\]\((https?:\/\/[^)]+)\)/g;
+            const matches = content.matchAll(imageRegex);
+            contentImagesCount = Array.from(matches).filter(m =>
+              m[1].includes('amazonaws.com') || m[1].includes('notion.so') || m[1].includes('vercel-storage')
+            ).length;
+            console.log(`Found ${contentImagesCount} images in content for ${project.slug}`);
+          }
+        } catch (contentError) {
+          console.error(`Error processing content images for ${project.slug}:`, contentError);
+          // Don't fail the whole sync if content images fail
+        }
+
+        results.push({
+          projectSlug: project.slug,
+          success: true,
+          blobUrl: thumbnailBlobUrl || undefined,
+          contentImagesCount,
+        });
       } catch (error) {
         console.error(`Error syncing ${project.slug}:`, error);
         results.push({
@@ -136,12 +153,19 @@ export async function GET() {
     const cache = await loadBlobCache();
     const entries = Object.values(cache);
 
+    const totalContentImages = entries.reduce(
+      (sum, entry) => sum + (entry.contentImages?.length || 0),
+      0
+    );
+
     return NextResponse.json({
       success: true,
-      cachedImages: entries.length,
+      cachedThumbnails: entries.length,
+      cachedContentImages: totalContentImages,
       cache: entries.map(entry => ({
         projectSlug: entry.projectSlug,
-        blobUrl: entry.blobUrl,
+        thumbnailUrl: entry.blobUrl,
+        contentImages: entry.contentImages?.length || 0,
         uploadedAt: entry.uploadedAt,
       })),
     });

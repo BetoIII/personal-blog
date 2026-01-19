@@ -66,7 +66,7 @@ export const notionPortfolioSource = {
 
     if (!project) return null;
 
-    const content = await getProjectContent(project.id);
+    const content = await getProjectContent(project.id, project.slug);
 
     return {
       slug: project.slug,

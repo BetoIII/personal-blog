@@ -5,7 +5,7 @@ import {
   PageObjectResponse,
   QueryDatabaseResponse,
 } from "@notionhq/client/build/src/api-endpoints";
-import { getBlobUrl } from "./blob-storage";
+import { getBlobUrl, processContentImages } from "./blob-storage";
 
 // Initialize Notion client for PORTFOLIO (separate workspace)
 const portfolioNotion = new Client({
@@ -305,11 +305,16 @@ export async function getProjectBySlug(
 }
 
 // Get project content as markdown (for project detail pages)
-export async function getProjectContent(pageId: string): Promise<string> {
+export async function getProjectContent(pageId: string, projectSlug: string): Promise<string> {
   try {
     const mdblocks = await portfolioN2m.pageToMarkdown(pageId);
     const mdString = portfolioN2m.toMarkdownString(mdblocks);
-    return mdString.parent;
+    const rawMarkdown = mdString.parent;
+
+    // Process content images: upload to blob storage and replace URLs
+    const processedMarkdown = await processContentImages(rawMarkdown, projectSlug);
+
+    return processedMarkdown;
   } catch (error) {
     console.error("Error fetching project content:", error);
     return "";

@@ -12,8 +12,16 @@ export interface BlobCacheEntry {
   projectSlug: string;
 }
 
+export interface ContentImageCache {
+  notionUrl: string;
+  blobUrl: string;
+  uploadedAt: string;
+}
+
 export interface BlobCache {
-  [projectSlug: string]: BlobCacheEntry;
+  [projectSlug: string]: BlobCacheEntry & {
+    contentImages?: ContentImageCache[];
+  };
 }
 
 // Load blob cache from file
@@ -161,6 +169,13 @@ export async function clearProjectCache(projectSlug: string) {
       await deleteBlob(entry.blobUrl);
     }
 
+    // Delete content images
+    if (entry?.contentImages) {
+      for (const img of entry.contentImages) {
+        await deleteBlob(img.blobUrl);
+      }
+    }
+
     // Remove from cache
     delete cache[projectSlug];
     await saveBlobCache(cache);
@@ -168,5 +183,134 @@ export async function clearProjectCache(projectSlug: string) {
     console.log(`Cleared cache for ${projectSlug}`);
   } catch (error) {
     console.error(`Error clearing cache for ${projectSlug}:`, error);
+  }
+}
+
+// Extract image URLs from markdown content
+export function extractImageUrls(markdown: string): string[] {
+  const imageUrls: string[] = [];
+
+  // Match markdown images: ![alt](url)
+  const markdownImageRegex = /!\[.*?\]\((https?:\/\/[^)]+)\)/g;
+  let match;
+
+  while ((match = markdownImageRegex.exec(markdown)) !== null) {
+    const url = match[1];
+    // Only process Notion/AWS S3 URLs (not already cached blob URLs)
+    if (url.includes('amazonaws.com') || url.includes('notion.so')) {
+      imageUrls.push(url);
+    }
+  }
+
+  return imageUrls;
+}
+
+// Upload a content image to blob storage
+async function uploadContentImage(
+  imageUrl: string,
+  projectSlug: string,
+  index: number
+): Promise<string | null> {
+  try {
+    console.log(`Downloading content image ${index} for ${projectSlug}...`);
+    const response = await fetch(imageUrl);
+
+    if (!response.ok) {
+      console.error(`Failed to download content image: ${response.statusText}`);
+      return null;
+    }
+
+    const blob = await response.blob();
+    const contentType = response.headers.get('content-type') || 'image/jpeg';
+    const extension = contentType.split('/')[1]?.split(';')[0] || 'jpg';
+
+    // Upload with index to make unique
+    const blobPath = `portfolio/${projectSlug}/content-${index}.${extension}`;
+    console.log(`Uploading to Vercel Blob: ${blobPath}`);
+
+    const { url } = await put(blobPath, blob, {
+      access: 'public',
+      addRandomSuffix: false,
+      contentType,
+    });
+
+    console.log(`✓ Uploaded content image ${index} to ${url}`);
+    return url;
+  } catch (error) {
+    console.error(`Error uploading content image ${index}:`, error);
+    return null;
+  }
+}
+
+// Process markdown content: upload images and replace URLs
+export async function processContentImages(
+  markdown: string,
+  projectSlug: string
+): Promise<string> {
+  try {
+    // Load cache
+    const cache = await loadBlobCache();
+    const projectCache = cache[projectSlug] || { contentImages: [] };
+
+    // Extract all image URLs from markdown
+    const imageUrls = extractImageUrls(markdown);
+
+    if (imageUrls.length === 0) {
+      console.log(`No images found in content for ${projectSlug}`);
+      return markdown;
+    }
+
+    console.log(`Found ${imageUrls.length} images in ${projectSlug} content`);
+
+    // Process each image
+    let processedMarkdown = markdown;
+    const contentImages: ContentImageCache[] = projectCache.contentImages || [];
+
+    for (let i = 0; i < imageUrls.length; i++) {
+      const notionUrl = imageUrls[i];
+
+      // Check if already cached
+      const cached = contentImages.find(img => img.notionUrl === notionUrl);
+      let blobUrl: string | null;
+
+      if (cached) {
+        console.log(`Using cached blob URL for content image ${i}`);
+        blobUrl = cached.blobUrl;
+      } else {
+        // Upload new image
+        blobUrl = await uploadContentImage(notionUrl, projectSlug, i);
+
+        if (blobUrl) {
+          // Add to cache
+          contentImages.push({
+            notionUrl,
+            blobUrl,
+            uploadedAt: new Date().toISOString(),
+          });
+        }
+      }
+
+      // Replace URL in markdown
+      if (blobUrl) {
+        processedMarkdown = processedMarkdown.replace(notionUrl, blobUrl);
+      }
+    }
+
+    // Update cache
+    cache[projectSlug] = {
+      ...projectCache,
+      contentImages,
+      projectSlug,
+      notionUrl: projectCache.notionUrl || '',
+      blobUrl: projectCache.blobUrl || '',
+      uploadedAt: projectCache.uploadedAt || new Date().toISOString(),
+    };
+
+    await saveBlobCache(cache);
+
+    return processedMarkdown;
+  } catch (error) {
+    console.error(`Error processing content images for ${projectSlug}:`, error);
+    return markdown; // Return original on error
   }
 }

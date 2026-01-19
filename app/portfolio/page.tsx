@@ -52,6 +52,8 @@ function getLinkIcon(type: string) {
   return <Icons.globe className="size-3" />;
 }
 
+export const revalidate = 1800; // Revalidate every 30 minutes (ISR)
+
 export default async function PortfolioPage() {
   // Fetch projects from Notion
   const notionProjects = await getCachedProjects();

@@ -16,6 +16,8 @@ import Markdown from "react-markdown";
 
 const BLUR_FADE_DELAY = 0.04;
 
+export const revalidate = 1800; // Revalidate every 30 minutes (ISR)
+
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString("en-US", {
     year: "numeric",

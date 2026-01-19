@@ -7,11 +7,5 @@
       "source": "/(.*)",
       "destination": "/"
     }
-  ],
-  "crons": [
-    {
-      "path": "/api/portfolio/refresh",
-      "schedule": "*/30 * * * *"
-    }
   ]
 }

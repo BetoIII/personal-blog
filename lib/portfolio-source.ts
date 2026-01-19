@@ -91,10 +91,10 @@ export const notionPortfolioSource = {
   },
 };
 
-// Cache for portfolio projects (revalidate every 60 seconds)
+// Cache for portfolio projects (revalidate every 30 minutes to refresh Notion URLs)
 let cachedProjects: PortfolioProject[] | null = null;
 let lastFetchTime = 0;
-const CACHE_DURATION = 60 * 1000; // 60 seconds
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes (Notion file URLs expire after ~1 hour)
 
 export async function getCachedProjects(): Promise<PortfolioProject[]> {
   const now = Date.now();

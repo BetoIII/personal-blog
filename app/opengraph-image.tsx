@@ -49,8 +49,8 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
-    padding: "40px",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    padding: "60px",
   },
   container: {
     height: "100%",
@@ -59,27 +59,40 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    border: "4px solid black",
-    padding: "60px",
+    backgroundColor: "white",
+    borderRadius: "24px",
+    padding: "80px",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
   },
   title: {
-    fontSize: "64px",
-    color: "black",
-    marginBottom: "10px",
+    fontSize: "72px",
+    fontWeight: "bold",
+    color: "#5a67d8",
+    marginBottom: "24px",
     textAlign: "center",
     fontFamily: "Clash Display",
-    letterSpacing: "0.5px",
+    letterSpacing: "-1px",
   },
   description: {
-    fontSize: "28px",
-    color: "black",
+    fontSize: "32px",
+    color: "#4a5568",
     textAlign: "center",
-    maxWidth: "800px",
+    maxWidth: "900px",
     fontFamily: "Clash Display",
-    letterSpacing: "0.5px",
-    border: "3px solid black",
-    padding: "10px 15px",
-    borderRadius: "100px",
+    lineHeight: "1.4",
+    fontWeight: "500",
+  },
+  badge: {
+    position: "absolute",
+    top: "40px",
+    right: "40px",
+    backgroundColor: "#667eea",
+    color: "white",
+    padding: "12px 24px",
+    borderRadius: "12px",
+    fontSize: "20px",
+    fontWeight: "bold",
+    fontFamily: "Clash Display",
   },
 } as const;
 
@@ -96,9 +109,10 @@ export default async function Image() {
           }}
         >
           <div style={styles.container}>
+            <div style={styles.badge}>Portfolio</div>
             <h1 style={styles.title}>Beto Juárez III</h1>
             <p style={styles.description}>
-              Personal website for Beto, including blog, portfolio, and contact details.
+              GTM & AI Advisor | Product Leader | Software Engineer
             </p>
           </div>
         </div>

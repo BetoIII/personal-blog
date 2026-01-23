@@ -10,16 +10,17 @@ export const contentType = "image/png";
 
 const getAssetData = async () => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://betoiii.com";
 
     const fontUrls = {
       clashDisplay: `${baseUrl}/fonts/ClashDisplay-Semibold.ttf`,
       cabinetGrotesk: `${baseUrl}/fonts/CabinetGrotesk-Medium.ttf`,
     };
 
-    const [clashDisplayRes, cabinetGroteskRes] = await Promise.all([
+    const [clashDisplayRes, cabinetGroteskRes, avatarRes] = await Promise.all([
       fetch(fontUrls.clashDisplay),
       fetch(fontUrls.cabinetGrotesk),
+      fetch(`${baseUrl}/avatar.png`),
     ]);
 
     if (!clashDisplayRes.ok || !cabinetGroteskRes.ok) {
@@ -31,9 +32,14 @@ const getAssetData = async () => {
       cabinetGroteskRes.arrayBuffer(),
     ]);
 
+    const avatarBase64 = avatarRes.ok
+      ? `data:image/png;base64,${Buffer.from(await avatarRes.arrayBuffer()).toString("base64")}`
+      : null;
+
     return {
       clashDisplay,
       cabinetGrotesk,
+      avatarBase64,
     };
   } catch (error) {
     console.error("Failed to load assets:", error);
@@ -49,50 +55,77 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    padding: "60px",
+    backgroundColor: "#FAF7F2",
+    padding: "50px",
   },
   container: {
     height: "100%",
     width: "100%",
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white",
-    borderRadius: "24px",
-    padding: "80px",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+    justifyContent: "space-between",
+    border: "4px solid #1A1A1A",
+    backgroundColor: "#FFFFFF",
+    padding: "60px",
+    gap: "60px",
+  },
+  leftContent: {
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+    gap: "20px",
   },
   title: {
-    fontSize: "72px",
-    fontWeight: "bold",
-    color: "#5a67d8",
-    marginBottom: "24px",
-    textAlign: "center",
-    fontFamily: "Clash Display",
-    letterSpacing: "-1px",
-  },
-  description: {
-    fontSize: "32px",
-    color: "#4a5568",
-    textAlign: "center",
-    maxWidth: "900px",
-    fontFamily: "Clash Display",
-    lineHeight: "1.4",
+    fontSize: "68px",
     fontWeight: "500",
+    color: "#1A1A1A",
+    lineHeight: "1",
+    fontFamily: "Clash Display",
+    letterSpacing: "-2px",
+    marginBottom: "8px",
+  },
+  subtitle: {
+    fontSize: "24px",
+    color: "#4A4A4A",
+    fontFamily: "Clash Display",
+    lineHeight: "1.3",
+    fontWeight: "500",
+    maxWidth: "600px",
   },
   badge: {
-    position: "absolute",
-    top: "40px",
-    right: "40px",
-    backgroundColor: "#667eea",
-    color: "white",
-    padding: "12px 24px",
-    borderRadius: "12px",
-    fontSize: "20px",
-    fontWeight: "bold",
+    display: "inline-block",
+    backgroundColor: "#D4573B",
+    color: "#FAF7F2",
+    padding: "10px 20px",
+    fontSize: "16px",
+    fontWeight: "600",
     fontFamily: "Clash Display",
+    textTransform: "uppercase",
+    letterSpacing: "1px",
+    alignSelf: "flex-start",
+  },
+  avatarContainer: {
+    display: "flex",
+    position: "relative",
+    width: "280px",
+    height: "280px",
+  },
+  avatar: {
+    width: "280px",
+    height: "280px",
+    border: "4px solid #1A1A1A",
+    objectFit: "cover",
+  },
+  accentBox: {
+    position: "absolute",
+    width: "280px",
+    height: "280px",
+    backgroundColor: "#6B7A5A",
+    border: "4px solid #1A1A1A",
+    top: "-20px",
+    left: "-20px",
+    zIndex: "-1",
   },
 } as const;
 
@@ -109,11 +142,23 @@ export default async function Image() {
           }}
         >
           <div style={styles.container}>
-            <div style={styles.badge}>Portfolio</div>
-            <h1 style={styles.title}>Beto Juárez III</h1>
-            <p style={styles.description}>
-              GTM & AI Advisor | Product Leader | Software Engineer
-            </p>
+            <div style={styles.leftContent}>
+              <div style={styles.badge}>Portfolio & Blog</div>
+              <h1 style={styles.title}>Beto Juárez III</h1>
+              <p style={styles.subtitle}>
+                GTM & AI Advisor · Product Leader · Software Engineer
+              </p>
+            </div>
+            {assetData?.avatarBase64 && (
+              <div style={styles.avatarContainer}>
+                <div style={styles.accentBox}></div>
+                <img
+                  src={assetData.avatarBase64}
+                  alt="Beto Juárez III"
+                  style={styles.avatar}
+                />
+              </div>
+            )}
           </div>
         </div>
       ),

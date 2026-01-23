@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Beto's Blog";
+export const alt = "Beto Juárez III";
 export const size = {
   width: 1200,
   height: 630,
@@ -96,9 +96,9 @@ export default async function Image() {
           }}
         >
           <div style={styles.container}>
-            <h1 style={styles.title}>Blog</h1>
+            <h1 style={styles.title}>Beto Juárez III</h1>
             <p style={styles.description}>
-              A blog about design, development, and other things.
+              Personal website for Beto, including blog, portfolio, and contact details.
             </p>
           </div>
         </div>

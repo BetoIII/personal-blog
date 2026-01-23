@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Beto's Blog",
   url: "https://betoiii.com",
   description:
-    "Thoughts, ideas, and insights on technology, development, and more.",
+    "Personal website for Beto, including blog, portfolio, and contact details.",
 };
 
 export type SiteConfig = typeof siteConfig;

@@ -35,6 +35,37 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: metadataKeywords,
+  authors: [
+    {
+      name: "Beto Juárez III",
+      url: siteConfig.url,
+    },
+  ],
+  creator: "Beto Juárez III",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: "/avatar.png",
+        width: 800,
+        height: 800,
+        alt: "Beto Juárez III",
+      },
+    ],
+    publishedTime: "2026-01-01T00:00:00.000Z",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    creator: "@betoiii",
+    images: ["/avatar.png"],
+  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },

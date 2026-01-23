@@ -57,7 +57,6 @@ export const metadata: Metadata = {
         alt: "Beto Juárez III",
       },
     ],
-    publishedTime: "2026-01-01T00:00:00.000Z",
   },
   twitter: {
     card: "summary_large_image",

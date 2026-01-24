@@ -3,8 +3,8 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 export const alt = "Beto Juárez III";
 export const size = {
-  width: 2400,
-  height: 1260,
+  width: 1200,
+  height: 630,
 };
 export const contentType = "image/png";
 
@@ -57,7 +57,7 @@ export default async function Image() {
             justifyContent: "center",
             backgroundColor: "#FAF7F2",
             fontFamily: assetData ? "Clash Display" : "system-ui",
-            padding: "100px",
+            padding: "50px",
           }}
         >
           <div
@@ -67,51 +67,91 @@ export default async function Image() {
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-              justifyContent: "center",
-              border: "8px solid #1A1A1A",
+              justifyContent: "space-between",
+              border: "4px solid #1A1A1A",
               backgroundColor: "#FFFFFF",
-              padding: "120px 160px",
+              padding: "60px 80px",
             }}
           >
             <div
               style={{
                 display: "flex",
-                backgroundColor: "#D4573B",
-                color: "#FAF7F2",
-                padding: "24px 48px",
-                fontSize: "36px",
-                fontWeight: "600",
-                textTransform: "uppercase",
-                letterSpacing: "2px",
-                marginBottom: "60px",
+                flexDirection: "column",
+                width: "100%",
               }}
             >
-              Portfolio & Blog
+              <div
+                style={{
+                  display: "flex",
+                  backgroundColor: "#D4573B",
+                  color: "#FAF7F2",
+                  padding: "12px 24px",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                  marginBottom: "30px",
+                  width: "fit-content",
+                }}
+              >
+                Portfolio & Blog
+              </div>
+              <h1
+                style={{
+                  fontSize: "80px",
+                  fontWeight: "500",
+                  color: "#1A1A1A",
+                  lineHeight: "1",
+                  letterSpacing: "-2px",
+                  marginBottom: "20px",
+                  margin: "0",
+                }}
+              >
+                Beto Juárez III
+              </h1>
+              <p
+                style={{
+                  fontSize: "32px",
+                  color: "#4A4A4A",
+                  lineHeight: "1.3",
+                  fontWeight: "500",
+                  margin: "0",
+                }}
+              >
+                GTM & AI Advisor · Product Leader · Software Engineer
+              </p>
             </div>
-            <h1
+            <div
               style={{
-                fontSize: "160px",
-                fontWeight: "500",
-                color: "#1A1A1A",
-                lineHeight: "1",
-                letterSpacing: "-4px",
-                marginBottom: "40px",
-                margin: "0",
+                display: "flex",
+                alignItems: "center",
+                gap: "20px",
+                marginTop: "30px",
               }}
             >
-              Beto Juárez III
-            </h1>
-            <p
-              style={{
-                fontSize: "64px",
-                color: "#4A4A4A",
-                lineHeight: "1.3",
-                fontWeight: "500",
-                margin: "0",
-              }}
-            >
-              GTM & AI Advisor · Product Leader · Software Engineer
-            </p>
+              <div
+                style={{
+                  display: "flex",
+                  backgroundColor: "#1A1A1A",
+                  color: "#FAF7F2",
+                  padding: "16px 32px",
+                  fontSize: "24px",
+                  fontWeight: "600",
+                  borderRadius: "0",
+                }}
+              >
+                Read My Latest Posts →
+              </div>
+              <div
+                style={{
+                  fontSize: "20px",
+                  color: "#666",
+                  fontWeight: "500",
+                }}
+              >
+                betoiii.com
+              </div>
+            </div>
           </div>
         </div>
       ),

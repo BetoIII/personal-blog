@@ -17,10 +17,9 @@ const getAssetData = async () => {
       cabinetGrotesk: `${baseUrl}/fonts/CabinetGrotesk-Medium.ttf`,
     };
 
-    const [clashDisplayRes, cabinetGroteskRes, avatarRes] = await Promise.all([
+    const [clashDisplayRes, cabinetGroteskRes] = await Promise.all([
       fetch(fontUrls.clashDisplay),
       fetch(fontUrls.cabinetGrotesk),
-      fetch(`${baseUrl}/avatar.png`),
     ]);
 
     if (!clashDisplayRes.ok || !cabinetGroteskRes.ok) {
@@ -32,14 +31,10 @@ const getAssetData = async () => {
       cabinetGroteskRes.arrayBuffer(),
     ]);
 
-    const avatarBase64 = avatarRes.ok
-      ? `data:image/png;base64,${Buffer.from(await avatarRes.arrayBuffer()).toString("base64")}`
-      : null;
-
     return {
       clashDisplay,
       cabinetGrotesk,
-      avatarBase64,
+      avatarUrl: `${baseUrl}/avatar.png`,
     };
   } catch (error) {
     console.error("Failed to load assets:", error);
@@ -149,11 +144,11 @@ export default async function Image() {
                 GTM & AI Advisor · Product Leader · Software Engineer
               </p>
             </div>
-            {assetData?.avatarBase64 && (
+            {assetData?.avatarUrl && (
               <div style={styles.avatarContainer}>
                 <div style={styles.accentBox}></div>
                 <img
-                  src={assetData.avatarBase64}
+                  src={assetData.avatarUrl}
                   alt="Beto Juárez III"
                   style={styles.avatar}
                 />

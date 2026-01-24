@@ -171,7 +171,7 @@ export default async function BlogPage({
         <section className="px-6 md:px-12 pb-12 bg-muted">
           <div className="mx-auto w-full max-w-7xl pt-12">
             <BlurFade delay={BLUR_FADE_DELAY * 6}>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 items-center">
                 <Link
                   href="/blog"
                   scroll={false}

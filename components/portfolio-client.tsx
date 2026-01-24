@@ -282,7 +282,7 @@ export function PortfolioClient({ projects, skills }: PortfolioClientProps) {
                           className={`text-base px-5 py-3 thick-border font-medium transition-all duration-300 cursor-pointer ${
                             isSelected
                               ? "bg-primary text-primary-foreground border-primary"
-                              : "bg-background text-foreground border-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                              : "bg-background text-primary border-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
                           }`}
                         >
                           {skill}

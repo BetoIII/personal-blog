@@ -12,13 +12,29 @@ const PRICING = {
   costPerPickup: 1.5,
 };
 
+// Helper function to format currency - show cents only if non-zero
+const formatCurrency = (value: number): string => {
+  const cents = value % 1;
+  if (cents === 0) {
+    return value.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  }
+  return value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+
 export default function ROICalculatorPage() {
-  const [leadsPerMonth, setLeadsPerMonth] = useState(1500);
-  const [attemptsPerLead, setAttemptsPerLead] = useState(6);
+  const [leadsPerMonth, setLeadsPerMonth] = useState(500);
+  const [attemptsPerLead, setAttemptsPerLead] = useState(9);
   const [pickupRate, setPickupRate] = useState(30);
-  const [contactToAppointment, setContactToAppointment] = useState(20);
-  const [appointmentRate, setAppointmentRate] = useState(15);
+  const [contactToAppointment, setContactToAppointment] = useState(15);
+  const [appointmentRate, setAppointmentRate] = useState(10);
   const [commissionPerDeal, setCommissionPerDeal] = useState(7000);
+  const [setupFee, setSetupFee] = useState(1500);
 
   const [results, setResults] = useState({
     totalAttempts: 0,
@@ -30,6 +46,8 @@ export default function ROICalculatorPage() {
     pickupsCost: 0,
     totalCost: 0,
     monthlyRevenue: 0,
+    netProfit: 0,
+    costPerDeal: 0,
     roi: 0,
     roiMultiple: 0,
   });
@@ -52,6 +70,8 @@ export default function ROICalculatorPage() {
     const pickupsCost = successfulPickups * PRICING.costPerPickup;
     const totalCost = baseFee + additionalAttemptsCost + pickupsCost;
 
+    const netProfit = monthlyRevenue - totalCost;
+    const costPerDeal = dealsClosed > 0 ? totalCost / dealsClosed : 0;
     const roi = totalCost > 0 ? ((monthlyRevenue - totalCost) / totalCost) * 100 : 0;
     const roiMultiple = totalCost > 0 ? monthlyRevenue / totalCost : 0;
 
@@ -65,6 +85,8 @@ export default function ROICalculatorPage() {
       pickupsCost,
       totalCost,
       monthlyRevenue,
+      netProfit,
+      costPerDeal,
       roi,
       roiMultiple,
     });
@@ -120,8 +142,8 @@ export default function ROICalculatorPage() {
           </BlurFade>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <BlurFade delay={BLUR_FADE_DELAY * 5}>
-              <div className="thick-border bg-background p-8 relative overflow-hidden group hover-lift">
+            <BlurFade delay={BLUR_FADE_DELAY * 5} className="h-full">
+              <div className="thick-border bg-background p-8 relative overflow-hidden group hover-lift h-full">
                 <div className="absolute top-4 right-4 w-16 h-16 bg-primary opacity-10 group-hover:opacity-20 transition-opacity"></div>
                 <div className="relative z-10">
                   <div className="text-5xl font-serif text-primary mb-4">25-35%</div>
@@ -135,8 +157,8 @@ export default function ROICalculatorPage() {
               </div>
             </BlurFade>
 
-            <BlurFade delay={BLUR_FADE_DELAY * 6}>
-              <div className="thick-border bg-background p-8 relative overflow-hidden group hover-lift">
+            <BlurFade delay={BLUR_FADE_DELAY * 6} className="h-full">
+              <div className="thick-border bg-background p-8 relative overflow-hidden group hover-lift h-full">
                 <div className="absolute top-4 right-4 w-16 h-16 bg-accent opacity-10 group-hover:opacity-20 transition-opacity"></div>
                 <div className="relative z-10">
                   <div className="text-5xl font-serif text-primary mb-4">24/7</div>
@@ -149,8 +171,8 @@ export default function ROICalculatorPage() {
               </div>
             </BlurFade>
 
-            <BlurFade delay={BLUR_FADE_DELAY * 7}>
-              <div className="thick-border bg-background p-8 relative overflow-hidden group hover-lift">
+            <BlurFade delay={BLUR_FADE_DELAY * 7} className="h-full">
+              <div className="thick-border bg-background p-8 relative overflow-hidden group hover-lift h-full">
                 <div className="absolute top-4 right-4 w-16 h-16 bg-accent opacity-10 group-hover:opacity-20 transition-opacity"></div>
                 <div className="relative z-10">
                   <div className="text-5xl font-serif text-primary mb-4">$0.05</div>
@@ -192,13 +214,15 @@ export default function ROICalculatorPage() {
                       Monthly Leads to Contact
                     </label>
                     <input
-                      type="number"
-                      value={leadsPerMonth}
-                      onChange={(e) => setLeadsPerMonth(Number(e.target.value))}
+                      type="text"
+                      value={leadsPerMonth.toLocaleString()}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        if (value === '' || !isNaN(Number(value))) {
+                          setLeadsPerMonth(value === '' ? 0 : Number(value));
+                        }
+                      }}
                       className="w-full px-4 py-3 thick-border bg-background text-foreground font-medium text-lg"
-                      min="100"
-                      max="50000"
-                      step="100"
                     />
                     <p className="text-xs text-muted-foreground mt-2">
                       How many leads from your database will you contact monthly?
@@ -296,23 +320,44 @@ export default function ROICalculatorPage() {
                   </div>
 
                   {/* Commission Per Deal */}
-                  <div>
+                  <div className="mb-8">
                     <label className="block text-sm font-medium uppercase tracking-wider mb-3">
                       Average Commission Per Deal ($)
                     </label>
                     <input
-                      type="number"
-                      value={commissionPerDeal}
-                      onChange={(e) =>
-                        setCommissionPerDeal(Number(e.target.value))
-                      }
+                      type="text"
+                      value={commissionPerDeal.toLocaleString()}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        if (value === '' || !isNaN(Number(value))) {
+                          setCommissionPerDeal(value === '' ? 0 : Number(value));
+                        }
+                      }}
                       className="w-full px-4 py-3 thick-border bg-background text-foreground font-medium text-lg"
-                      min="1000"
-                      max="50000"
-                      step="500"
                     />
                     <p className="text-xs text-muted-foreground mt-2">
                       Your average commission/revenue per closed transaction
+                    </p>
+                  </div>
+
+                  {/* Setup Fee */}
+                  <div>
+                    <label className="block text-sm font-medium uppercase tracking-wider mb-3">
+                      One-Time Setup Fee ($)
+                    </label>
+                    <input
+                      type="text"
+                      value={setupFee.toLocaleString()}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        if (value === '' || !isNaN(Number(value))) {
+                          setSetupFee(value === '' ? 0 : Number(value));
+                        }
+                      }}
+                      className="w-full px-4 py-3 thick-border bg-background text-foreground font-medium text-lg"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Initial setup cost (one-time charge)
                     </p>
                   </div>
                 </div>
@@ -364,6 +409,14 @@ export default function ROICalculatorPage() {
                         })}
                       </div>
                     </div>
+                    <div className="thick-border border-primary-foreground bg-primary-foreground/10 p-4 col-span-2">
+                      <div className="text-xs uppercase tracking-wider mb-2 opacity-90">
+                        Voice AI Cost Per Deal
+                      </div>
+                      <div className="text-3xl font-serif">
+                        ${formatCurrency(results.costPerDeal)}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Cost Breakdown */}
@@ -373,7 +426,7 @@ export default function ROICalculatorPage() {
                         Base Platform Fee
                       </span>
                       <span className="font-serif text-lg">
-                        ${results.baseFee.toFixed(2)}
+                        ${formatCurrency(results.baseFee)}
                       </span>
                     </div>
                     <div className="flex justify-between items-center pb-3 border-b border-primary-foreground/30">
@@ -381,7 +434,7 @@ export default function ROICalculatorPage() {
                         Additional Attempts
                       </span>
                       <span className="font-serif text-lg">
-                        ${results.additionalAttemptsCost.toFixed(2)}
+                        ${formatCurrency(results.additionalAttemptsCost)}
                       </span>
                     </div>
                     <div className="flex justify-between items-center pb-3 border-b border-primary-foreground/30">
@@ -389,7 +442,15 @@ export default function ROICalculatorPage() {
                         Connections
                       </span>
                       <span className="font-serif text-lg">
-                        ${results.pickupsCost.toFixed(2)}
+                        ${formatCurrency(results.pickupsCost)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center pb-3 border-b border-primary-foreground/30">
+                      <span className="text-sm uppercase tracking-wider">
+                        Setup Cost (One-Time)
+                      </span>
+                      <span className="font-serif text-lg">
+                        ${formatCurrency(setupFee)}
                       </span>
                     </div>
                   </div>
@@ -410,7 +471,7 @@ export default function ROICalculatorPage() {
 
                   {/* ROI Highlight */}
                   <div className="thick-border border-primary-foreground bg-accent text-accent-foreground p-6">
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-3 gap-6">
                       <div>
                         <div className="text-xs uppercase tracking-wider mb-2">
                           Monthly Revenue
@@ -418,6 +479,18 @@ export default function ROICalculatorPage() {
                         <div className="text-3xl font-serif">
                           $
                           {results.monthlyRevenue.toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          })}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-wider mb-2">
+                          Net Profit
+                        </div>
+                        <div className="text-3xl font-serif">
+                          $
+                          {results.netProfit.toLocaleString(undefined, {
                             minimumFractionDigits: 0,
                             maximumFractionDigits: 0,
                           })}
@@ -458,8 +531,8 @@ export default function ROICalculatorPage() {
           </BlurFade>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <BlurFade delay={BLUR_FADE_DELAY * 12}>
-              <div className="thick-border bg-background p-10 hover-lift">
+            <BlurFade delay={BLUR_FADE_DELAY * 12} className="h-full">
+              <div className="thick-border bg-background p-10 hover-lift h-full">
                 <div className="w-16 h-16 bg-primary thick-border flex items-center justify-center mb-6">
                   <span className="text-3xl">🏠</span>
                 </div>
@@ -493,8 +566,8 @@ export default function ROICalculatorPage() {
               </div>
             </BlurFade>
 
-            <BlurFade delay={BLUR_FADE_DELAY * 13}>
-              <div className="thick-border bg-background p-10 hover-lift">
+            <BlurFade delay={BLUR_FADE_DELAY * 13} className="h-full">
+              <div className="thick-border bg-background p-10 hover-lift h-full">
                 <div className="w-16 h-16 bg-accent thick-border flex items-center justify-center mb-6">
                   <span className="text-3xl">💰</span>
                 </div>

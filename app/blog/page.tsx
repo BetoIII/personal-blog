@@ -174,6 +174,7 @@ export default async function BlogPage({
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/blog"
+                  scroll={false}
                   className={`px-5 py-2 thick-border font-medium uppercase text-xs tracking-wider transition-all duration-300 ${
                     !selectedTag
                       ? "bg-primary text-primary-foreground"
@@ -190,6 +191,7 @@ export default async function BlogPage({
                     <BlurFade key={tag} delay={BLUR_FADE_DELAY * 7 + id * 0.05}>
                       <Link
                         href={`/blog?tag=${encodeURIComponent(tag)}`}
+                        scroll={false}
                         className={`px-5 py-2 thick-border font-medium uppercase text-xs tracking-wider transition-all duration-300 ${
                           selectedTag === tag
                             ? "bg-primary text-primary-foreground"

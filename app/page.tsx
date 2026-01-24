@@ -6,13 +6,13 @@ import { BlurFadeText } from "@/components/magicui/blur-fade-text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ResumeCard } from "@/components/resume-card";
-import { ProjectCard } from "@/components/project-card";
 import { DATA } from "@/lib/portfolio-data";
 import { getCachedPosts } from "@/lib/blog-source";
 import { getCachedProjects } from "@/lib/portfolio-source";
 import { Icons } from "@/components/icons";
 import { HomePageStructuredData } from "@/components/structured-data";
 import Markdown from "react-markdown";
+import { HomeProjectsSection } from "@/components/home-projects-section";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -56,6 +56,7 @@ export default async function Page() {
   const projects = notionProjects.length > 0
     ? notionProjects.slice(0, 2).map(p => ({
         title: p.data.title,
+        slug: p.slug,
         href: p.data.links.find(l => l.type.toLowerCase().includes("website"))?.href || p.data.links[0]?.href || "#",
         dates: p.data.dates,
         active: p.data.active,
@@ -69,7 +70,10 @@ export default async function Page() {
         image: p.data.image || "",
         video: p.data.video || "",
       }))
-    : DATA.projects.slice(0, 2);
+    : DATA.projects.slice(0, 2).map((p, idx) => ({
+        ...p,
+        slug: `project-${idx}`,
+      }));
 
   // Extract all unique skills from all Notion projects
   const allSkills = new Set<string>();
@@ -86,13 +90,13 @@ export default async function Page() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 relative z-10">
               <BlurFade delay={BLUR_FADE_DELAY}>
-                <div className="inline-block mb-4 px-4 py-2 thick-border bg-primary text-primary-foreground">
+                <div className="inline-block mb-4 px-4 py-2 thick-border bg-secondary text-primary">
                   <span className="text-sm font-medium uppercase tracking-wider">GTM & AI Advisor</span>
                 </div>
               </BlurFade>
               <BlurFadeText
                 delay={BLUR_FADE_DELAY * 2}
-                className="mb-6"
+                className="mb-6 text-xl"
                 yOffset={12}
                 text={`Hi, I'm ${DATA.name.split(" ")[0]}`}
               />
@@ -251,25 +255,7 @@ export default async function Page() {
               </p>
             </div>
           </BlurFade>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {projects.map((project, id) => (
-              <BlurFade
-                key={project.title}
-                delay={BLUR_FADE_DELAY * 14 + id * 0.15}
-              >
-                <ProjectCard
-                  href={project.href}
-                  title={project.title}
-                  description={project.description}
-                  dates={project.dates}
-                  tags={project.technologies}
-                  image={project.image}
-                  video={project.video}
-                  links={project.links}
-                />
-              </BlurFade>
-            ))}
-          </div>
+          <HomeProjectsSection projects={projects} />
 
           <BlurFade delay={BLUR_FADE_DELAY * 15}>
             <div className="flex justify-center mt-16">

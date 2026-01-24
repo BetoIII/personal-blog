@@ -21,7 +21,17 @@
       "Bash(pnpm build:*)",
       "WebFetch(domain:2d88fdd2355c8917.vercel-dns-017.com)",
       "Skill(figma:implement-design)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(pnpm add:*)",
+      "Bash(vercel env:*)",
+      "Bash(git diff:*)",
+      "Bash(head:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:betoiii.com)",
+      "Bash(pkill:*)",
+      "Bash(pnpm run build:*)",
+      "Bash(node --version)",
+      "Bash(npm view:*)"
     ]
   }
 }

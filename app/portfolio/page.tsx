@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { DATA } from "@/lib/portfolio-data";
 import { getCachedProjects } from "@/lib/portfolio-source";
 import { Icons } from "@/components/icons";
@@ -90,10 +91,12 @@ export default async function PortfolioPage() {
   const skills = Array.from(allSkills).sort();
 
   return (
-    <PortfolioClient
-      projects={projects}
-      skills={skills}
-      contactEmail={DATA.contact.email}
-    />
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <PortfolioClient
+        projects={projects}
+        skills={skills}
+        contactEmail={DATA.contact.email}
+      />
+    </Suspense>
   );
 }

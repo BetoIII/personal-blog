@@ -90,7 +90,7 @@ export default async function BlogPost({ params }: PageProps) {
         <div className="max-w-7xl mx-auto flex flex-col gap-6 p-6">
           <div className="flex flex-wrap items-center gap-3 gap-y-5 text-sm text-muted-foreground">
             <Button variant="outline" asChild className="h-6 w-6">
-              <Link href="/">
+              <Link href="/blog">
                 <ArrowLeft className="w-4 h-4" />
                 <span className="sr-only">Back to all articles</span>
               </Link>

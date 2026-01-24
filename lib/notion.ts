@@ -14,6 +14,50 @@ const notion = new Client({
 
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
+// Custom transformer for embed blocks (Spotify, YouTube, etc.)
+n2m.setCustomTransformer("embed", async (block: any) => {
+  const { embed } = block as any;
+
+  if (!embed?.url) {
+    return "";
+  }
+
+  const url = embed.url;
+
+  // Handle Spotify embeds
+  if (url.includes("spotify.com")) {
+    // Convert Spotify URLs to embed format
+    // Example: https://open.spotify.com/playlist/xyz -> https://open.spotify.com/embed/playlist/xyz
+    let embedUrl = url;
+
+    // If it's already an embed URL, use it as is
+    if (!url.includes("/embed/")) {
+      embedUrl = url.replace("open.spotify.com/", "open.spotify.com/embed/");
+    }
+
+    // Return markdown with special syntax that we'll parse in the renderer
+    return `[spotify-embed](${embedUrl})`;
+  }
+
+  // Handle YouTube embeds
+  if (url.includes("youtube.com") || url.includes("youtu.be")) {
+    let videoId = "";
+
+    if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1]?.split("?")[0];
+    } else if (url.includes("youtube.com/watch?v=")) {
+      videoId = url.split("v=")[1]?.split("&")[0];
+    }
+
+    if (videoId) {
+      return `[youtube-embed](https://www.youtube.com/embed/${videoId})`;
+    }
+  }
+
+  // For other embeds, just return the URL
+  return `[embed](${url})`;
+});
+
 // Your Notion database ID
 const DATABASE_ID = process.env.NOTION_DATABASE_ID || "";
 

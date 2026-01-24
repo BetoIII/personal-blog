@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { ProjectCard } from "@/components/project-card";
 import { Badge } from "@/components/ui/badge";
@@ -34,12 +35,18 @@ interface PortfolioClientProps {
 }
 
 export function PortfolioClient({ projects, skills }: PortfolioClientProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [selectedProject, setSelectedProject] = useState<(Project & { content?: string }) | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
+  const [isLoadingContent, setIsLoadingContent] = useState(false);
+  const [contentError, setContentError] = useState(false);
 
-  const handleProjectClick = async (project: Project) => {
+  const handleProjectClick = useCallback(async (project: Project) => {
     setIsModalOpen(true);
+    setIsLoadingContent(true);
+    setContentError(false);
 
     // Set the project data immediately
     setSelectedProject({ ...project });
@@ -50,21 +57,41 @@ export function PortfolioClient({ projects, skills }: PortfolioClientProps) {
       if (response.ok) {
         const data = await response.json();
         setSelectedProject({ ...project, content: data.content });
+        setIsLoadingContent(false);
       } else {
-        // If no content available, just show the project without content
-        setSelectedProject({ ...project });
+        // If no content available, mark as error
+        setContentError(true);
+        setIsLoadingContent(false);
       }
     } catch (error) {
       console.error("Error fetching project content:", error);
-      // Still show the project even if content fetch fails
-      setSelectedProject({ ...project });
+      // Mark as error if content fetch fails
+      setContentError(true);
+      setIsLoadingContent(false);
     }
-  };
+  }, []);
+
+  // Handle URL parameter to auto-open project modal
+  useEffect(() => {
+    const projectSlug = searchParams.get('project');
+    if (projectSlug && projects.length > 0 && !isModalOpen) {
+      const project = projects.find(p => p.slug === projectSlug);
+      if (project) {
+        handleProjectClick(project);
+      }
+    }
+  }, [searchParams, projects, isModalOpen, handleProjectClick]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     // Delay clearing the selected project to allow exit animation
-    setTimeout(() => setSelectedProject(null), 300);
+    setTimeout(() => {
+      setSelectedProject(null);
+      setIsLoadingContent(false);
+      setContentError(false);
+    }, 300);
+    // Clear the URL parameter
+    router.push('/portfolio', { scroll: false });
   };
 
   const toggleSkill = (skill: string) => {
@@ -302,6 +329,8 @@ export function PortfolioClient({ projects, skills }: PortfolioClientProps) {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         project={selectedProject}
+        isLoadingContent={isLoadingContent}
+        hasContentError={contentError}
       />
     </>
   );

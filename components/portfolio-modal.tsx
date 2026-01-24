@@ -26,9 +26,11 @@ interface PortfolioModalProps {
     role?: string;
     content?: string;
   } | null;
+  isLoadingContent?: boolean;
+  hasContentError?: boolean;
 }
 
-export function PortfolioModal({ isOpen, onClose, project }: PortfolioModalProps) {
+export function PortfolioModal({ isOpen, onClose, project, isLoadingContent = false, hasContentError = false }: PortfolioModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -236,15 +238,26 @@ export function PortfolioModal({ isOpen, onClose, project }: PortfolioModalProps
               )}
             </div>
 
+            {/* Loading State */}
+            {isLoadingContent && (
+              <div className="py-16 flex flex-col items-center justify-center gap-4">
+                <div className="relative w-16 h-16">
+                  <div className="absolute inset-0 thick-border border-primary/20"></div>
+                  <div className="absolute inset-0 thick-border border-t-primary animate-spin"></div>
+                </div>
+                <p className="text-muted-foreground font-medium">Loading project details...</p>
+              </div>
+            )}
+
             {/* Markdown Content */}
-            {project.content && (
+            {!isLoadingContent && project.content && (
               <div className="prose prose-lg max-w-none">
                 <MarkdownRenderer content={project.content} />
               </div>
             )}
 
-            {/* Empty state if no content */}
-            {!project.content && (
+            {/* Error state if content fetch failed */}
+            {!isLoadingContent && hasContentError && (
               <div className="py-12 text-center">
                 <p className="text-muted-foreground italic">
                   No additional content available for this project.

@@ -471,7 +471,7 @@ export default function ROICalculatorPage() {
 
                   {/* ROI Highlight */}
                   <div className="thick-border border-primary-foreground bg-accent text-accent-foreground p-6">
-                    <div className="grid grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div>
                         <div className="text-xs uppercase tracking-wider mb-2">
                           Monthly Revenue

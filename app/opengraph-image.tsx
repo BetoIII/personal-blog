@@ -91,7 +91,6 @@ export default async function Image() {
                   textTransform: "uppercase",
                   letterSpacing: "1px",
                   marginBottom: "30px",
-                  width: "fit-content",
                 }}
               >
                 Portfolio & Blog
@@ -137,7 +136,6 @@ export default async function Image() {
                   padding: "16px 32px",
                   fontSize: "24px",
                   fontWeight: "600",
-                  borderRadius: "0",
                 }}
               >
                 Read My Latest Posts →

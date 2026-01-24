@@ -3,8 +3,8 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 export const alt = "Beto Juárez III";
 export const size = {
-  width: 1200,
-  height: 630,
+  width: 2400,
+  height: 1260,
 };
 export const contentType = "image/png";
 
@@ -57,7 +57,7 @@ export default async function Image() {
             justifyContent: "center",
             backgroundColor: "#FAF7F2",
             fontFamily: assetData ? "Clash Display" : "system-ui",
-            padding: "50px",
+            padding: "100px",
           }}
         >
           <div
@@ -68,9 +68,9 @@ export default async function Image() {
               flexDirection: "column",
               alignItems: "flex-start",
               justifyContent: "center",
-              border: "4px solid #1A1A1A",
+              border: "8px solid #1A1A1A",
               backgroundColor: "#FFFFFF",
-              padding: "60px 80px",
+              padding: "120px 160px",
             }}
           >
             <div
@@ -78,24 +78,24 @@ export default async function Image() {
                 display: "flex",
                 backgroundColor: "#D4573B",
                 color: "#FAF7F2",
-                padding: "12px 24px",
-                fontSize: "18px",
+                padding: "24px 48px",
+                fontSize: "36px",
                 fontWeight: "600",
                 textTransform: "uppercase",
-                letterSpacing: "1px",
-                marginBottom: "30px",
+                letterSpacing: "2px",
+                marginBottom: "60px",
               }}
             >
               Portfolio & Blog
             </div>
             <h1
               style={{
-                fontSize: "80px",
+                fontSize: "160px",
                 fontWeight: "500",
                 color: "#1A1A1A",
                 lineHeight: "1",
-                letterSpacing: "-2px",
-                marginBottom: "20px",
+                letterSpacing: "-4px",
+                marginBottom: "40px",
                 margin: "0",
               }}
             >
@@ -103,7 +103,7 @@ export default async function Image() {
             </h1>
             <p
               style={{
-                fontSize: "32px",
+                fontSize: "64px",
                 color: "#4A4A4A",
                 lineHeight: "1.3",
                 fontWeight: "500",

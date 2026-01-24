@@ -34,95 +34,12 @@ const getAssetData = async () => {
     return {
       clashDisplay,
       cabinetGrotesk,
-      avatarUrl: `${baseUrl}/avatar.png`,
     };
   } catch (error) {
     console.error("Failed to load assets:", error);
     return null;
   }
 };
-
-const styles = {
-  wrapper: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FAF7F2",
-    padding: "50px",
-  },
-  container: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    border: "4px solid #1A1A1A",
-    backgroundColor: "#FFFFFF",
-    padding: "60px",
-    gap: "60px",
-  },
-  leftContent: {
-    display: "flex",
-    flexDirection: "column",
-    flex: 1,
-    gap: "20px",
-  },
-  title: {
-    fontSize: "68px",
-    fontWeight: "500",
-    color: "#1A1A1A",
-    lineHeight: "1",
-    fontFamily: "Clash Display",
-    letterSpacing: "-2px",
-    marginBottom: "8px",
-  },
-  subtitle: {
-    fontSize: "24px",
-    color: "#4A4A4A",
-    fontFamily: "Clash Display",
-    lineHeight: "1.3",
-    fontWeight: "500",
-    maxWidth: "600px",
-  },
-  badge: {
-    display: "inline-block",
-    backgroundColor: "#D4573B",
-    color: "#FAF7F2",
-    padding: "10px 20px",
-    fontSize: "16px",
-    fontWeight: "600",
-    fontFamily: "Clash Display",
-    textTransform: "uppercase",
-    letterSpacing: "1px",
-    alignSelf: "flex-start",
-  },
-  avatarContainer: {
-    display: "flex",
-    position: "relative",
-    width: "280px",
-    height: "280px",
-  },
-  avatar: {
-    width: "280px",
-    height: "280px",
-    border: "4px solid #1A1A1A",
-    objectFit: "cover",
-  },
-  accentBox: {
-    position: "absolute",
-    width: "280px",
-    height: "280px",
-    backgroundColor: "#6B7A5A",
-    border: "4px solid #1A1A1A",
-    top: "-20px",
-    left: "-20px",
-    zIndex: "-1",
-  },
-} as const;
 
 export default async function Image() {
   try {
@@ -132,28 +49,69 @@ export default async function Image() {
       (
         <div
           style={{
-            ...styles.wrapper,
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#FAF7F2",
             fontFamily: assetData ? "Clash Display" : "system-ui",
+            padding: "50px",
           }}
         >
-          <div style={styles.container}>
-            <div style={styles.leftContent}>
-              <div style={styles.badge}>Portfolio & Blog</div>
-              <h1 style={styles.title}>Beto Juárez III</h1>
-              <p style={styles.subtitle}>
-                GTM & AI Advisor · Product Leader · Software Engineer
-              </p>
+          <div
+            style={{
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              border: "4px solid #1A1A1A",
+              backgroundColor: "#FFFFFF",
+              padding: "60px 80px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                backgroundColor: "#D4573B",
+                color: "#FAF7F2",
+                padding: "12px 24px",
+                fontSize: "18px",
+                fontWeight: "600",
+                textTransform: "uppercase",
+                letterSpacing: "1px",
+                marginBottom: "30px",
+              }}
+            >
+              Portfolio & Blog
             </div>
-            {assetData?.avatarUrl && (
-              <div style={styles.avatarContainer}>
-                <div style={styles.accentBox}></div>
-                <img
-                  src={assetData.avatarUrl}
-                  alt="Beto Juárez III"
-                  style={styles.avatar}
-                />
-              </div>
-            )}
+            <h1
+              style={{
+                fontSize: "80px",
+                fontWeight: "500",
+                color: "#1A1A1A",
+                lineHeight: "1",
+                letterSpacing: "-2px",
+                marginBottom: "20px",
+                margin: "0",
+              }}
+            >
+              Beto Juárez III
+            </h1>
+            <p
+              style={{
+                fontSize: "32px",
+                color: "#4A4A4A",
+                lineHeight: "1.3",
+                fontWeight: "500",
+                margin: "0",
+              }}
+            >
+              GTM & AI Advisor · Product Leader · Software Engineer
+            </p>
           </div>
         </div>
       ),
@@ -164,12 +122,6 @@ export default async function Image() {
               {
                 name: "Clash Display",
                 data: assetData.clashDisplay,
-                weight: 500,
-                style: "normal",
-              },
-              {
-                name: "Cabinet Grotesk",
-                data: assetData.cabinetGrotesk,
                 weight: 500,
                 style: "normal",
               },

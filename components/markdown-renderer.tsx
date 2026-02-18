@@ -11,6 +11,23 @@ interface MarkdownRendererProps {
   content: string;
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .trim();
+}
+
+function getTextContent(children: React.ReactNode): string {
+  if (typeof children === "string") return children;
+  if (Array.isArray(children)) return children.map(getTextContent).join("");
+  if (children !== null && typeof children === "object" && "props" in children) {
+    return getTextContent((children as { props: { children: React.ReactNode } }).props.children);
+  }
+  return "";
+}
+
 function CopyCodeBlock({ code, language, children }: { code: string; language: string; children: React.ReactNode }) {
   const [copied, setCopied] = useState(false);
 
@@ -84,6 +101,14 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
+          h2({ children, ...props }) {
+            const id = slugify(getTextContent(children));
+            return <h2 id={id} {...props}>{children}</h2>;
+          },
+          h3({ children, ...props }) {
+            const id = slugify(getTextContent(children));
+            return <h3 id={id} {...props}>{children}</h3>;
+          },
           code({ inline, className, children, ...props }: {inline?: boolean; className?: string; children?: React.ReactNode}) {
             const match = /language-(\w+)/.exec(className || "");
             const codeText = String(children).replace(/\n$/, "");

@@ -19,6 +19,19 @@ import { siteConfig } from "@/lib/site";
 // Revalidate every 24 hours (86400 seconds)
 export const revalidate = 86400;
 
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params;
+  const page = await notionBlogSource.getPage([slug]);
+
+  if (!page) {
+    return {};
+  }
+
+  return {
+    title: `${page.data.title} - Beto Juárez III`,
+  };
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -154,7 +167,10 @@ export default async function BlogPost({ params }: PageProps) {
               <AuthorCard author={getAuthor(page.data.author)} />
             )}
             <div className="border border-border rounded-lg p-6 bg-card">
-              <TableOfContents />
+              <TableOfContents
+                postUrl={`${siteConfig.url}/blog/${slug}`}
+                postTitle={page.data.title}
+              />
             </div>
           </div>
         </aside>

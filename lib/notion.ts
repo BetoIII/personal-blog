@@ -14,6 +14,29 @@ const notion = new Client({
 
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
+// Custom transformer for code blocks to handle nested backticks
+// (e.g. CLAUDE.md content containing ``` inside a Notion code block)
+n2m.setCustomTransformer("code", async (block: any) => {
+  const { code } = block as any;
+  if (!code) return "";
+
+  const language = (code.language || "").replace(/\s+/g, "");
+  const text = (code.rich_text || [])
+    .map((rt: any) => rt.plain_text)
+    .join("");
+
+  // Find the longest backtick sequence in the content and use one more
+  // to ensure the fence can never be broken by the content
+  const backtickMatches = text.match(/`+/g) || [];
+  const maxBacktickLen = backtickMatches.reduce(
+    (max: number, s: string) => Math.max(max, s.length),
+    2
+  );
+  const fence = "`".repeat(Math.max(3, maxBacktickLen + 1));
+
+  return `${fence}${language}\n${text}\n${fence}`;
+});
+
 // Custom transformer for embed blocks (Spotify, YouTube, etc.)
 n2m.setCustomTransformer("embed", async (block: any) => {
   const { embed } = block as any;

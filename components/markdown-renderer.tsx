@@ -1,12 +1,46 @@
 "use client";
 
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Copy, Check } from "lucide-react";
 
 interface MarkdownRendererProps {
   content: string;
+}
+
+function CopyCodeBlock({ code, language, children }: { code: string; language: string; children: React.ReactNode }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      const el = document.createElement("textarea");
+      el.value = code;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative group">
+      <button
+        onClick={handleCopy}
+        aria-label="Copy code"
+        className="absolute top-2 right-2 z-10 p-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-150 bg-white/10 hover:bg-white/20 text-white/60 hover:text-white"
+      >
+        {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+      </button>
+      {children}
+    </div>
+  );
 }
 
 // Component to render Spotify embeds
@@ -46,21 +80,24 @@ function YouTubeEmbed({ url }: { url: string }) {
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
   return (
-    <div className="prose dark:prose-invert max-w-none prose-headings:scroll-mt-8 prose-headings:font-semibold prose-a:no-underline prose-headings:tracking-tight prose-headings:text-balance prose-p:tracking-tight prose-p:text-balance prose-lg">
+    <div className="prose dark:prose-invert max-w-none prose-headings:scroll-mt-8 prose-headings:font-semibold prose-a:no-underline prose-headings:tracking-tight prose-p:tracking-tight prose-p:text-lg prose-headings:text-2xl">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
           code({ inline, className, children, ...props }: {inline?: boolean; className?: string; children?: React.ReactNode}) {
             const match = /language-(\w+)/.exec(className || "");
+            const codeText = String(children).replace(/\n$/, "");
             return !inline && match ? (
-              <SyntaxHighlighter
-                style={oneDark}
-                language={match[1]}
-                PreTag="div"
-                {...props}
-              >
-                {String(children).replace(/\n$/, "")}
-              </SyntaxHighlighter>
+              <CopyCodeBlock code={codeText} language={match[1]}>
+                <SyntaxHighlighter
+                  style={oneDark}
+                  language={match[1]}
+                  PreTag="div"
+                  {...props}
+                >
+                  {codeText}
+                </SyntaxHighlighter>
+              </CopyCodeBlock>
             ) : (
               <code className={className} {...props}>
                 {children}

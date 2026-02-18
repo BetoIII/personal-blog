@@ -83,6 +83,9 @@ n2m.setCustomTransformer("embed", async (block: any) => {
 
 // Your Notion database ID
 const DATABASE_ID = process.env.NOTION_DATABASE_ID || "";
+if (!DATABASE_ID) {
+  throw new Error("NOTION_DATABASE_ID environment variable is not set");
+}
 
 export interface NotionBlogPost {
   id: string;

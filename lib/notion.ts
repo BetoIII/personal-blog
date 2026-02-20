@@ -77,6 +77,11 @@ n2m.setCustomTransformer("embed", async (block: any) => {
     }
   }
 
+  // Handle Luma embeds
+  if (url.includes("lu.ma") || url.includes("luma.com")) {
+    return `[luma-embed](${url})`;
+  }
+
   // For other embeds, just return the URL
   return `[embed](${url})`;
 });

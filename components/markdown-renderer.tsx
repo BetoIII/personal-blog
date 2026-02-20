@@ -77,6 +77,24 @@ function SpotifyEmbed({ url }: { url: string }) {
   );
 }
 
+// Component to render Luma event embeds
+function LumaEmbed({ url }: { url: string }) {
+  return (
+    <div className="my-8 rounded-lg overflow-hidden shadow-lg">
+      <iframe
+        src={url}
+        width="600px"
+        height="450px"
+        frameBorder=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+        className="w-full"
+        style={{ border: "none" }}
+      />
+    </div>
+  );
+}
+
 // Component to render YouTube embeds
 function YouTubeEmbed({ url }: { url: string }) {
   return (
@@ -142,7 +160,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 const childProps = child.props;
                 if (childProps?.children) {
                   const childText = String(childProps.children);
-                  if (childText === "spotify-embed" || childText === "youtube-embed" || childText === "embed") {
+                  if (childText === "spotify-embed" || childText === "youtube-embed" || childText === "luma-embed" || childText === "embed") {
                     // This is an embed link, render it directly without the paragraph wrapper
                     return <>{children}</>;
                   }
@@ -165,6 +183,11 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
             // YouTube embed
             if (childText === "youtube-embed" && href) {
               return <YouTubeEmbed url={href} />;
+            }
+
+            // Luma embed
+            if (childText === "luma-embed" && href) {
+              return <LumaEmbed url={href} />;
             }
 
             // Generic embed fallback

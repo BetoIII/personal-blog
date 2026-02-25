@@ -6,6 +6,7 @@ import { SiteNav } from "@/components/site-nav";
 import { siteConfig } from "@/lib/site";
 import { metadataKeywords } from "./metadata";
 import Footer from "@/components/footer";
+import { Analytics } from "@vercel/analytics/next";
 import "@/app/globals.css";
 
 const fraunces = Fraunces({
@@ -101,6 +102,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
